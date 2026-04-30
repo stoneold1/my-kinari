@@ -46,13 +46,10 @@
   #messages { flex: 1; overflow-y: auto; padding: 40px 20px; scroll-behavior: smooth; }
   .messages-inner { max-width: 800px; margin: 0 auto; }
   
-  .bubble-wrap { margin-bottom: 30px; display: flex; flex-direction: column; animation: fadeIn 0.4s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  
+  .bubble-wrap { margin-bottom: 30px; display: flex; flex-direction: column; }
   .bubble { line-height: 1.8; font-size: 16px; max-width: 85%; position: relative; }
   .bubble.user { align-self: flex-end; background: var(--glass); padding: 15px 22px; border-radius: 20px 20px 4px 20px; border: 1px solid var(--glass-border); }
   .bubble.assistant { align-self: flex-start; border-left: 2px solid var(--accent); padding: 10px 20px; }
-  .bubble.assistant p { margin-bottom: 10px; }
 
   #input-wrap { padding: 20px; background: linear-gradient(to top, var(--bg), transparent); }
   #input-box { 
@@ -90,10 +87,19 @@
 </div>
 
 <script>
+// --- SELF-HEALING & INITIALIZATION ---
 let USER_API_KEY = localStorage.getItem('KINARI_KEY');
 const gate = document.getElementById('api-gate');
 
-// Check key on load
+// Automatic Fix for "Discriminator" error: Convert old 'ai' roles to 'assistant'
+let rawHistory = JSON.parse(localStorage.getItem('Kinari_v12')) || [];
+let chatHistory = rawHistory.map(m => {
+    if (m.role === 'ai') return { ...m, role: 'assistant' };
+    return m;
+});
+localStorage.setItem('Kinari_v12', JSON.stringify(chatHistory));
+
+// Show Gate if key is missing
 if (!USER_API_KEY || USER_API_KEY === "null") {
     gate.style.display = 'flex';
 }
@@ -108,8 +114,8 @@ function saveApiKey() {
     } else { alert("Key must start with gsk_"); }
 }
 
+// --- CORE CHAT LOGIC ---
 const GROQ_MODEL = "llama-3.3-70b-versatile";
-let chatHistory = JSON.parse(localStorage.getItem('Kinari_v12')) || [];
 
 async function handleSend() {
     const inputEl = document.getElementById('user-input');
@@ -118,6 +124,7 @@ async function handleSend() {
 
     chatHistory.push({ role: 'user', content: text });
     inputEl.value = '';
+    inputEl.style.height = 'auto';
     render();
 
     try {
@@ -138,7 +145,8 @@ async function handleSend() {
         render();
     } catch (e) {
         alert("Flame Flickered: " + e.message);
-        if (e.message.toLowerCase().includes("api key")) {
+        // If API key is rejected by server, reset and show gate
+        if (e.message.toLowerCase().includes("api key") || e.message.toLowerCase().includes("authentication")) {
             localStorage.removeItem('KINARI_KEY');
             location.reload();
         }
@@ -147,19 +155,22 @@ async function handleSend() {
 
 function render() {
     const target = document.getElementById('chat-target');
-    target.innerHTML = chatHistory.length === 0 ? '<div style="text-align:center; padding-top:20vh; opacity:0.3; font-family:\'Cinzel Decorative\'"><h1>🔥</h1><br>SILENCE</div>' : 
-    chatHistory.map(m => `
-        <div class="bubble-wrap">
-            <div class="bubble ${m.role}">
-                ${m.role === 'assistant' ? marked.parse(m.content) : m.content}
+    if (chatHistory.length === 0) {
+        target.innerHTML = '<div style="text-align:center; padding-top:20vh; opacity:0.3; font-family:\'Cinzel Decorative\'"><h1>🔥</h1><br>SILENCE</div>';
+    } else {
+        target.innerHTML = chatHistory.map(m => `
+            <div class="bubble-wrap" style="align-items: ${m.role === 'user' ? 'flex-end' : 'flex-start'}">
+                <div class="bubble ${m.role}">
+                    ${m.role === 'assistant' ? marked.parse(m.content) : m.content}
+                </div>
             </div>
-        </div>
-    `).join('');
+        `).join('');
+    }
     const container = document.getElementById('messages');
     container.scrollTop = container.scrollHeight;
 }
 
-// Auto-resize textarea
+// UI Helpers
 document.getElementById('user-input').addEventListener('input', function() {
     this.style.height = 'auto';
     this.style.height = (this.scrollHeight) + 'px';
