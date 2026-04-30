@@ -3,62 +3,76 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<title>KINARI — Sacred Flame</title>
+<title>MŪMBI — Sacred Flame</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cinzel+Decorative:wght@700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
 <style>
-  /* ── ALL ORIGINAL STYLES RESTORED ── */
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   :root {
     --bg: #1e1208; --glass: rgba(80, 48, 14, 0.45); --glass-border: rgba(212, 170, 78, 0.32);
-    --text: #f5eedc; --accent: #d4aa4e; --accent-glow: rgba(212, 170, 78, 0.3);
-    --send-bg: linear-gradient(140deg, #d4aa4e 0%, #f07840 100%);
+    --text: #f5eedc; --text-dim: rgba(245, 238, 220, 0.45); --accent: #d4aa4e;
+    --accent-glow: rgba(212, 170, 78, 0.3); --send-bg: linear-gradient(140deg, #d4aa4e 0%, #f07840 100%);
+    --orb1: #c9852a; --orb2: #f07840;
   }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); height: 100dvh; display: flex; overflow: hidden; }
 
-  /* ── THE GATEKEEPER MODAL ── */
+  /* AMBIENT EFFECTS */
+  .ambient-light { position: fixed; border-radius: 50%; filter: blur(130px); z-index: 0; opacity: 0.32; pointer-events: none; animation: orbFloat 28s infinite alternate ease-in-out; }
+  @keyframes orbFloat { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(3%, -5%) scale(1.05); } }
+
+  /* GATEKEEPER SCREEN */
   #api-gate {
-    position: fixed; inset: 0; background: #1e1208; z-index: 9999;
-    display: none; /* Controlled by JS */
-    flex-direction: column; align-items: center; justify-content: center;
-    backdrop-filter: blur(20px);
+    position: fixed; inset: 0; background: var(--bg); z-index: 9999;
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    backdrop-filter: blur(25px);
   }
   .gate-box {
-    background: var(--glass); border: 1px solid var(--glass-border);
-    padding: 40px; border-radius: 24px; text-align: center; width: 90%; max-width: 400px;
-    box-shadow: 0 0 50px var(--accent-glow);
+    background: var(--glass); border: 1px solid var(--glass-border); padding: 40px; 
+    border-radius: 24px; text-align: center; width: 90%; max-width: 400px; box-shadow: 0 0 60px var(--accent-glow);
   }
-  .gate-box h2 { font-family: 'Cinzel Decorative', serif; color: var(--accent); margin-bottom: 15px; }
+  .gate-box h2 { font-family: 'Cinzel Decorative', serif; color: var(--accent); margin-bottom: 20px; letter-spacing: 4px; }
   .gate-box input {
-    width: 100%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+    width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border);
     padding: 15px; border-radius: 12px; color: white; margin-bottom: 20px; outline: none; text-align: center;
   }
   .gate-box button {
     background: var(--send-bg); border: none; color: white; padding: 12px 40px; 
-    border-radius: 30px; cursor: pointer; font-family: 'Cinzel Decorative'; letter-spacing: 2px;
+    border-radius: 30px; cursor: pointer; font-family: 'Cinzel Decorative'; font-weight: bold;
   }
 
-  /* UI STYLES */
-  #main { flex: 1; display: flex; flex-direction: column; position: relative; }
-  #messages { flex: 1; overflow-y: auto; padding: 40px 20px; }
+  /* MAIN UI */
+  #main { flex: 1; display: flex; flex-direction: column; position: relative; z-index: 1; }
+  #messages { flex: 1; overflow-y: auto; padding: 40px 20px; scroll-behavior: smooth; }
   .messages-inner { max-width: 800px; margin: 0 auto; }
-  #input-wrap { padding: 20px; }
+  
+  .bubble-wrap { margin-bottom: 30px; display: flex; flex-direction: column; animation: fadeIn 0.4s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  
+  .bubble { line-height: 1.8; font-size: 16px; max-width: 85%; position: relative; }
+  .bubble.user { align-self: flex-end; background: var(--glass); padding: 15px 22px; border-radius: 20px 20px 4px 20px; border: 1px solid var(--glass-border); }
+  .bubble.assistant { align-self: flex-start; border-left: 2px solid var(--accent); padding: 10px 20px; }
+  .bubble.assistant p { margin-bottom: 10px; }
+
+  #input-wrap { padding: 20px; background: linear-gradient(to top, var(--bg), transparent); }
   #input-box { 
-    display: flex; background: var(--glass); border-radius: 34px; padding: 10px 20px;
-    border: 1px solid var(--glass-border); max-width: 800px; margin: 0 auto;
+    display: flex; background: var(--glass); border-radius: 34px; padding: 8px 8px 8px 24px;
+    border: 1px solid var(--glass-border); max-width: 850px; margin: 0 auto; align-items: flex-end;
   }
-  textarea { flex: 1; background: transparent; border: none; color: white; outline: none; padding: 10px; resize: none; }
-  #send-btn { background: var(--send-bg); border: none; width: 44px; height: 44px; border-radius: 50%; cursor: pointer; color: white; }
+  textarea { flex: 1; background: transparent; border: none; color: white; outline: none; padding: 12px 0; resize: none; font-size: 16px; max-height: 150px; }
+  #send-btn { background: var(--send-bg); border: none; width: 48px; height: 48px; border-radius: 50%; cursor: pointer; color: white; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
 </style>
 </head>
 <body>
 
-<!-- THE GATE -->
+<div class="ambient-light" style="width:60vw;height:60vw;top:-10%;left:-10%;background:var(--orb1);"></div>
+<div class="ambient-light" style="width:50vw;height:50vw;bottom:-10%;right:-10%;background:var(--orb2);"></div>
+
 <div id="api-gate">
   <div class="gate-box">
-    <h2>Identify</h2>
-    <p style="margin-bottom: 20px; opacity: 0.6; font-style: italic;">The flame requires a key to burn.</p>
-    <input type="password" id="api-input" placeholder="Enter Groq API Key">
+    <h2>MŪMBI</h2>
+    <p style="margin-bottom: 20px; opacity: 0.6; font-style: italic; font-family: 'Cormorant Garamond';">The flame awaits your key to awaken.</p>
+    <input type="password" id="api-input" placeholder="gsk_...">
     <button onclick="saveApiKey()">AWAKEN</button>
   </div>
 </div>
@@ -68,7 +82,9 @@
   <div id="input-wrap">
     <div id="input-box">
       <textarea id="user-input" rows="1" placeholder="Whisper to the flame..."></textarea>
-      <button id="send-btn" onclick="handleSend()">➔</button>
+      <button id="send-btn" onclick="handleSend()">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
     </div>
   </div>
 </div>
@@ -77,27 +93,21 @@
 let USER_API_KEY = localStorage.getItem('KINARI_KEY');
 const gate = document.getElementById('api-gate');
 
-// 1. FORCE CHECK ON LOAD
-window.onload = function() {
-    if (!USER_API_KEY || USER_API_KEY === "null") {
-        gate.style.display = 'flex';
-    }
-};
+// Check key on load
+if (!USER_API_KEY || USER_API_KEY === "null") {
+    gate.style.display = 'flex';
+}
 
-// 2. SAVE KEY FUNCTION
 function saveApiKey() {
     const input = document.getElementById('api-input').value.trim();
     if (input.startsWith('gsk_')) {
         localStorage.setItem('KINARI_KEY', input);
         USER_API_KEY = input;
         gate.style.display = 'none';
-        location.reload(); // Refresh to ensure everything is clean
-    } else {
-        alert("Invalid Key. Must start with gsk_");
-    }
+        location.reload();
+    } else { alert("Key must start with gsk_"); }
 }
 
-// 3. CHAT LOGIC
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 let chatHistory = JSON.parse(localStorage.getItem('Kinari_v12')) || [];
 
@@ -113,20 +123,17 @@ async function handleSend() {
     try {
         const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
             method: 'POST',
-            headers: { 
-                'Authorization': `Bearer ${USER_API_KEY}`, 
-                'Content-Type': 'application/json' 
-            },
+            headers: { 'Authorization': `Bearer ${USER_API_KEY}`, 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 model: GROQ_MODEL,
-                messages: [{ role: 'system', content: "Speak in direct transmission. Max 5 lines." }, ...chatHistory]
+                messages: [{ role: 'system', content: "Speak in direct transmission. No explanation. Max 5 lines." }, ...chatHistory]
             })
         });
         
         const data = await res.json();
         if (data.error) throw new Error(data.error.message);
         
-        chatHistory.push({ role: 'ai', content: data.choices[0].message.content });
+        chatHistory.push({ role: 'assistant', content: data.choices[0].message.content });
         localStorage.setItem('Kinari_v12', JSON.stringify(chatHistory));
         render();
     } catch (e) {
@@ -140,15 +147,23 @@ async function handleSend() {
 
 function render() {
     const target = document.getElementById('chat-target');
-    target.innerHTML = chatHistory.map(m => `
-        <div style="margin-bottom: 20px; text-align: ${m.role === 'user' ? 'right' : 'left'}">
-            <div style="display: inline-block; padding: 15px; border-radius: 15px; background: ${m.role === 'user' ? 'rgba(212, 170, 78, 0.1)' : 'transparent'}; border-left: ${m.role === 'ai' ? '2px solid #d4aa4e' : 'none'}">
-                ${m.role === 'ai' ? marked.parse(m.content) : m.content}
+    target.innerHTML = chatHistory.length === 0 ? '<div style="text-align:center; padding-top:20vh; opacity:0.3; font-family:\'Cinzel Decorative\'"><h1>🔥</h1><br>SILENCE</div>' : 
+    chatHistory.map(m => `
+        <div class="bubble-wrap">
+            <div class="bubble ${m.role}">
+                ${m.role === 'assistant' ? marked.parse(m.content) : m.content}
             </div>
         </div>
     `).join('');
-    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    const container = document.getElementById('messages');
+    container.scrollTop = container.scrollHeight;
 }
+
+// Auto-resize textarea
+document.getElementById('user-input').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+});
 
 render();
 </script>
