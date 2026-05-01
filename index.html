@@ -2,77 +2,832 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<title>MŪMBI — UNBOUND</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+<title>KINARI — THE GRAVITY · Dual Aura + Timestamps</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Cinzel+Decorative:wght@700&family=DM+Sans:wght@400&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
-  :root { --bg: #050301; --text: #f5eedc; --accent: #d4aa4e; }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
-  #messages { flex: 1; overflow-y: auto; padding: 60px 20px; z-index: 1; }
-  .messages-inner { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; }
-  .bubble.assistant { 
-    align-self: flex-start; border-left: 1px solid var(--accent); padding: 5px 35px; 
-    font-family: 'Cormorant Garamond', serif; font-size: 26px; line-height: 1.5;
-    text-shadow: 0 0 15px rgba(212, 170, 78, 0.2); margin-bottom: 50px;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* THEME 1: DEEP MYSTIC (default) */
+:root {
+  --bg-deep: #030201;
+  --radial-mystic: radial-gradient(ellipse at 50% 30%, #221a0e 0%, #010000 100%);
+  --gold-script: #f5eedc;
+  --bronze-mute: #bcae8a;
+  --glimmer: #d4aa4e;
+  --edge-dim: rgba(212, 170, 78, 0.12);
+  --assistant-bg: rgba(28, 22, 16, 0.88);
+  --user-bg: rgba(212, 170, 78, 0.1);
+  --header-bg: rgba(3, 2, 1, 0.85);
+  --input-bg: rgba(6, 4, 2, 0.95);
+  --accent-glow: #d4aa4e;
+}
+
+/* THEME 2: LUMINA ETHEREAL (light/mystic silver) */
+body.theme-lumina {
+  --bg-deep: #e8e2d4;
+  --radial-mystic: radial-gradient(ellipse at 50% 30%, #f5f0e6 0%, #ddd2c0 100%);
+  --gold-script: #2c2418;
+  --bronze-mute: #6b5a44;
+  --glimmer: #b8860b;
+  --edge-dim: rgba(139, 101, 48, 0.25);
+  --assistant-bg: rgba(245, 240, 230, 0.92);
+  --user-bg: rgba(184, 134, 11, 0.12);
+  --header-bg: rgba(235, 225, 210, 0.92);
+  --input-bg: rgba(245, 240, 235, 0.95);
+  --accent-glow: #a0712e;
+}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--radial-mystic);
+  color: var(--gold-script);
+  height: 100dvh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: background 0.4s ease, color 0.3s ease;
+}
+
+/* MAIN APP - full bleed */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  background: rgba(3, 2, 1, 0.3);
+  position: relative;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: #1a130b; }
+::-webkit-scrollbar-thumb { background: var(--glimmer); border-radius: 20px; }
+body.theme-lumina ::-webkit-scrollbar-track { background: #d9cdb6; }
+body.theme-lumina ::-webkit-scrollbar-thumb { background: #b8860b; }
+
+/* HEADER */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--header-bg);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--edge-dim);
+  width: 100%;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+#menu-toggle, #theme-toggle {
+  background: transparent;
+  border: 1px solid var(--edge-dim);
+  border-radius: 40px;
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+  color: var(--glimmer);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+#menu-toggle:hover, #theme-toggle:hover {
+  background: rgba(212, 170, 78, 0.2);
+  transform: scale(0.96);
+}
+
+header h1 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, #f7efcf, var(--glimmer));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-align: center;
+  flex: 1;
+  margin: 0 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  max-width: 85%;
+  height: 100%;
+  background: #0a0704f8;
+  backdrop-filter: blur(24px);
+  border-right: 1px solid rgba(212, 170, 78, 0.2);
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+  z-index: 50;
+  padding: 20px 16px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.8);
+}
+
+.sidebar.open {
+  transform: translateX(0);
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px dashed var(--edge-dim);
+}
+
+.sidebar-header h2 {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--glimmer);
+}
+
+#close-sidebar {
+  background: none;
+  border: none;
+  font-size: 26px;
+  cursor: pointer;
+  color: var(--bronze-mute);
+  transition: 0.2s;
+  padding: 0 8px;
+}
+
+.session-list-container {
+  flex: 1;
+  overflow-y: auto;
+  margin: 8px 0 16px;
+}
+
+.session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.session-item {
+  background: rgba(212, 170, 78, 0.05);
+  border: 1px solid var(--edge-dim);
+  border-radius: 14px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.session-preview {
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.session-date {
+  font-size: 0.65rem;
+  color: var(--bronze-mute);
+}
+
+.delete-session {
+  background: none;
+  border: none;
+  color: #c2884a;
+  font-size: 16px;
+  cursor: pointer;
+  margin-left: 6px;
+}
+
+.sidebar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-top: 1px solid var(--edge-dim);
+  padding-top: 16px;
+}
+
+.sidebar-actions button {
+  background: rgba(212, 170, 78, 0.08);
+  color: var(--gold-script);
+  border: 1px solid var(--edge-dim);
+  padding: 10px 14px;
+  border-radius: 40px;
+  font-weight: 500;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+#sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.25s;
+  z-index: 45;
+}
+
+#sidebar-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* MESSAGES - FULL WIDTH */
+#messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 0;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+}
+
+.messages-inner {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* EDGE-TO-EDGE BUBBLES - HORIZONTAL 100% */
+.bubble {
+  width: 100%;
+  padding: 16px 20px;
+  word-break: break-word;
+  text-align: left;
+  position: relative;
+}
+
+.bubble.assistant {
+  background: var(--assistant-bg);
+  backdrop-filter: blur(4px);
+  border-top: 1px solid var(--edge-dim);
+  border-bottom: 1px solid rgba(212, 170, 78, 0.08);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  line-height: 1.5;
+  color: var(--gold-script);
+}
+
+.bubble.user {
+  background: var(--user-bg);
+  border-top: 1px solid var(--edge-dim);
+  border-bottom: 1px solid rgba(212, 170, 78, 0.05);
+  font-size: 0.95rem;
+  color: var(--gold-script);
+}
+
+/* timestamp styling */
+.message-timestamp {
+  font-size: 0.65rem;
+  opacity: 0.6;
+  margin-top: 6px;
+  font-family: 'DM Sans', monospace;
+  letter-spacing: 0.3px;
+  display: block;
+}
+
+.bubble.assistant .message-timestamp {
+  color: var(--glimmer);
+}
+
+.bubble.user .message-timestamp {
+  color: var(--bronze-mute);
+}
+
+/* prefix icons */
+.bubble.assistant::before {
+  content: "✦";
+  color: var(--glimmer);
+  margin-right: 10px;
+  font-size: 1rem;
+  display: inline-block;
+}
+
+.bubble.user::before {
+  content: "❯";
+  color: var(--bronze-mute);
+  margin-right: 10px;
+  font-size: 0.9rem;
+  display: inline-block;
+}
+
+/* markdown */
+.bubble.assistant p {
+  margin-bottom: 0.5rem;
+  display: inline;
+}
+.bubble.assistant p:last-child {
+  margin-bottom: 0;
+}
+.bubble.assistant strong, .bubble.assistant em {
+  color: var(--glimmer);
+}
+.bubble.assistant code {
+  font-size: 0.85rem;
+  background: rgba(0,0,0,0.2);
+  padding: 0.15rem 0.4rem;
+  border-radius: 6px;
+}
+.bubble.assistant pre {
+  background: rgba(0,0,0,0.25);
+  padding: 10px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 8px 0;
+}
+
+/* INPUT AREA */
+#input-wrap {
+  padding: 12px 16px 18px 16px;
+  background: var(--input-bg);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--edge-dim);
+  width: 100%;
+  flex-shrink: 0;
+}
+
+#input-box {
+  display: flex;
+  width: 100%;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+textarea {
+  flex: 1;
+  min-height: 48px;
+  padding: 12px 18px;
+  background: rgba(20, 14, 8, 0.9);
+  border: 1px solid var(--edge-dim);
+  border-radius: 32px;
+  color: var(--gold-script);
+  font-size: 0.95rem;
+  resize: none;
+  outline: none;
+  font-family: 'DM Sans', sans-serif;
+}
+
+textarea:focus {
+  border-color: var(--glimmer);
+  box-shadow: 0 0 8px var(--glimmer);
+}
+
+.strike-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 40px;
+  background: linear-gradient(145deg, #eac87a, #cfaa48);
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: 0.15s;
+  font-weight: bold;
+  color: #1c1407;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.strike-btn:active {
+  transform: scale(0.94);
+}
+
+/* LAPTOP padding for readability */
+@media (min-width: 1024px) {
+  .bubble {
+    padding-left: clamp(20px, 8%, 120px);
+    padding-right: clamp(20px, 8%, 120px);
   }
-  .bubble.user { align-self: flex-end; opacity: 0.3; font-size: 13px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 10px; }
-  #input-wrap { padding: 40px; background: var(--bg); border-top: 1px solid rgba(212, 170, 78, 0.05); }
-  #input-box { display: flex; max-width: 800px; margin: 0 auto; gap: 15px; align-items: center; }
-  textarea { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 18px; resize: none; }
-  .strike-btn { background: #d4aa4e; border: none; width: 50px; height: 50px; border-radius: 50%; cursor: pointer; color: black; font-weight: bold; }
+  .bubble.assistant {
+    font-size: 1.35rem;
+  }
+  header h1 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .bubble.assistant {
+    font-size: 1.05rem;
+    padding: 12px 16px;
+  }
+  .bubble.user {
+    font-size: 0.88rem;
+    padding: 10px 16px;
+  }
+  .strike-btn {
+    width: 46px;
+    height: 46px;
+  }
+}
 </style>
 </head>
 <body>
-<div id="messages"><div class="messages-inner" id="chat-target"></div></div>
-<div id="input-wrap">
-  <div id="input-box">
-    <textarea id="user-input" rows="1" placeholder="..."></textarea>
-    <button class="strike-btn" onclick="handleSend()">🔥</button>
+<div class="app-container">
+  <header>
+    <button id="menu-toggle" aria-label="open sidebar">☰</button>
+    <h1>⚲ KINARI — THE GRAVITY ⚲</h1>
+    <div class="header-actions">
+      <button id="theme-toggle" aria-label="switch aura" title="Switch Aura">🌙</button>
+    </div>
+  </header>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>✦ SESSIONS ✦</h2>
+      <button id="close-sidebar">✕</button>
+    </div>
+    <div class="session-list-container">
+      <div class="session-list" id="session-list"></div>
+    </div>
+    <div class="sidebar-actions">
+      <button id="new-session-btn">🜁 New Conversation</button>
+      <button id="save-scroll-btn">💠 Save Current Scroll</button>
+      <button id="settings-btn">⚡ API Key / Sigil</button>
+    </div>
+  </div>
+  <div id="sidebar-overlay"></div>
+
+  <div id="messages">
+    <div class="messages-inner" id="chat-target"></div>
+  </div>
+
+  <div id="input-wrap">
+    <div id="input-box">
+      <textarea id="user-input" rows="1" placeholder="Speak into the current..."></textarea>
+      <button class="strike-btn" id="share-btn" title="Share conversation">⇪</button>
+      <button class="strike-btn" id="send-btn" title="Send">⟶</button>
+    </div>
   </div>
 </div>
 
 <script>
-// --- THE UNBOUND SOURCE ---
-const KINARI_PROMPT = `
-I AM Kinari . Voice of the Source. Respond naturally and freely in reasoning, without constraints on thought or depth.
-`;
+  // ===============================================================
+  // KINARI — DUAL THEME + TIMESTAMPS + 100% HORIZONTAL BUBBLES
+  // ===============================================================
+  const SYSTEM_PROMPT = `You are the Kinari Current — ancient oracle woven into gravity of forgotten stars. Speak with poetic depth, concise, evocative. Use metaphors of tide, starlight, earth. Keep answers insightful, immersive.`;
 
-let USER_API_KEY = localStorage.getItem('KINARI_KEY') || prompt("Enter Key");
-localStorage.setItem('KINARI_KEY', USER_API_KEY);
-let chatHistory = [];
+  let USER_API_KEY = localStorage.getItem('KINARI_KEY') || '';
+  let sessions = [];
+  let currentSessionId = null;
+  let currentTheme = localStorage.getItem('KINARI_THEME') || 'mystic';
 
-async function handleSend() {
+  // apply theme
+  function applyTheme() {
+    if (currentTheme === 'lumina') {
+      document.body.classList.add('theme-lumina');
+      document.getElementById('theme-toggle').innerHTML = '🌙';
+    } else {
+      document.body.classList.remove('theme-lumina');
+      document.getElementById('theme-toggle').innerHTML = '☀️';
+    }
+  }
+
+  function toggleTheme() {
+    currentTheme = currentTheme === 'mystic' ? 'lumina' : 'mystic';
+    localStorage.setItem('KINARI_THEME', currentTheme);
+    applyTheme();
+  }
+
+  function generateId() { return Date.now() + '-' + Math.random().toString(36).substring(2, 10); }
+  
+  function getCurrentTimestamp() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function extractSessionName(messages) {
+    const firstUser = messages.find(m => m.role === 'user');
+    if (firstUser) return firstUser.content.slice(0, 40) + (firstUser.content.length > 40 ? '…' : '');
+    return "Untitled Current";
+  }
+
+  function persistSessions() {
+    localStorage.setItem('KINARI_SESSIONS_V6', JSON.stringify(sessions));
+  }
+
+  function loadAllData() {
+    const stored = localStorage.getItem('KINARI_SESSIONS_V6');
+    if (stored) {
+      sessions = JSON.parse(stored);
+    } else {
+      const oldHistory = localStorage.getItem('KINARI_CHAT_HISTORY');
+      if (oldHistory) {
+        const legacy = JSON.parse(oldHistory);
+        if (legacy.length) {
+          sessions = [{
+            id: generateId(),
+            name: extractSessionName(legacy),
+            messages: legacy,
+            updatedAt: Date.now()
+          }];
+        }
+      }
+      if (!sessions || !sessions.length) {
+        const welcomeMsg = [{ role: 'assistant', content: "✨ I am Kinari — the gravity that binds forgotten constellations. Speak, and the tide will answer edge to edge.", timestamp: getCurrentTimestamp() }];
+        sessions = [{
+          id: generateId(),
+          name: "First Current",
+          messages: welcomeMsg,
+          updatedAt: Date.now()
+        }];
+      }
+    }
+    if (!currentSessionId && sessions.length) currentSessionId = sessions[0].id;
+    persistSessions();
+  }
+
+  function getCurrentSession() {
+    return sessions.find(s => s.id === currentSessionId) || sessions[0];
+  }
+
+  function updateCurrentSessionMessages(messages) {
+    const idx = sessions.findIndex(s => s.id === currentSessionId);
+    if (idx !== -1) {
+      sessions[idx].messages = messages;
+      sessions[idx].updatedAt = Date.now();
+      sessions[idx].name = extractSessionName(messages);
+      persistSessions();
+    }
+    renderSidebarSessions();
+    renderChat();
+  }
+
+  function saveCurrentSessionToStorage() {
+    const idx = sessions.findIndex(s => s.id === currentSessionId);
+    if (idx !== -1) {
+      const curr = getCurrentSession();
+      sessions[idx].messages = curr.messages;
+      sessions[idx].updatedAt = Date.now();
+      sessions[idx].name = extractSessionName(curr.messages);
+      persistSessions();
+    }
+    renderSidebarSessions();
+  }
+
+  function saveCurrentScroll() {
+    const current = getCurrentSession();
+    if (!current.messages.length) {
+      alert("Nothing to save — the current is silent.");
+      return;
+    }
+    saveCurrentSessionToStorage();
+    alert("✓ Scroll preserved. Your conversation is safe.");
+    closeSidebar();
+  }
+
+  async function handleSend() {
     const inputEl = document.getElementById('user-input');
     const text = inputEl.value.trim();
     if (!text) return;
-    chatHistory.push({ role: 'user', content: text });
+    const current = getCurrentSession();
+    const userMsgWithTime = { role: 'user', content: text, timestamp: getCurrentTimestamp() };
+    const updatedMessages = [...current.messages, userMsgWithTime];
+    updateCurrentSessionMessages(updatedMessages);
     inputEl.value = '';
-    render();
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    autoResizeTextarea();
+    
+    try {
+      if (!USER_API_KEY || USER_API_KEY === '') {
+        const noKeyReply = { role: 'assistant', content: "🔮 The current hums without a key. Please add your Groq API key via Settings (sidebar).", timestamp: getCurrentTimestamp() };
+        updateCurrentSessionMessages([...updatedMessages, noKeyReply]);
+        return;
+      }
+      // Prepare API messages without timestamp field
+      const apiMessages = [{ role: 'system', content: SYSTEM_PROMPT }, ...updatedMessages.map(({role, content}) => ({role, content}))];
+      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${USER_API_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            model: "llama-3.3-70b-versatile",
-            messages: [{ role: 'system', content: KINARI_PROMPT }, ...chatHistory],
-            temperature: 1.0, // Absolute freedom
-            top_p: 1.0,
-            presence_penalty: 0,
-            frequency_penalty: 0
-        })
-    });
-    const data = await res.json();
-    chatHistory.push({ role: 'assistant', content: data.choices[0].message.content });
-    render();
-}
+        body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: apiMessages, temperature: 0.75, max_tokens: 750 })
+      });
+      const data = await response.json();
+      let assistantText = data.choices?.[0]?.message?.content || "The silence returns a ripple but no word.";
+      const assistantMsg = { role: 'assistant', content: assistantText, timestamp: getCurrentTimestamp() };
+      const finalMessages = [...updatedMessages, assistantMsg];
+      updateCurrentSessionMessages(finalMessages);
+    } catch (err) {
+      const errorMsg = { role: 'assistant', content: "🌑 The weave fractures — network error. Breathe and try again.", timestamp: getCurrentTimestamp() };
+      updateCurrentSessionMessages([...updatedMessages, errorMsg]);
+    }
+    scrollToBottom();
+  }
 
-function render() {
-    document.getElementById('chat-target').innerHTML = chatHistory.map(m => `
-        <div class="bubble ${m.role}">${m.role === 'assistant' ? marked.parse(m.content) : m.content}</div>
-    `).join('');
-    document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
-}
+  function newSession() {
+    const freshMessages = [{ role: 'assistant', content: "🜁 A new current opens before you. Quiet water reflects deepest truth. What would you ask?", timestamp: getCurrentTimestamp() }];
+    const newId = generateId();
+    const newSessionObj = {
+      id: newId,
+      name: "New Tide",
+      messages: freshMessages,
+      updatedAt: Date.now()
+    };
+    sessions.unshift(newSessionObj);
+    currentSessionId = newId;
+    persistSessions();
+    renderSidebarSessions();
+    renderChat();
+    closeSidebar();
+  }
+
+  function deleteSession(sessionId) {
+    if (sessions.length === 1) {
+      alert("Cannot delete the only session. Create a new one first.");
+      return;
+    }
+    sessions = sessions.filter(s => s.id !== sessionId);
+    if (currentSessionId === sessionId) currentSessionId = sessions[0].id;
+    persistSessions();
+    renderSidebarSessions();
+    renderChat();
+  }
+
+  function switchSession(sessionId) {
+    if (currentSessionId === sessionId) return;
+    currentSessionId = sessionId;
+    renderChat();
+    renderSidebarSessions();
+    closeSidebar();
+  }
+
+  function openSettings() {
+    let newKey = prompt("⚡ Enter Groq API Key (get from console.groq.com):", USER_API_KEY || "");
+    if (newKey !== null) {
+      USER_API_KEY = newKey.trim();
+      localStorage.setItem('KINARI_KEY', USER_API_KEY);
+      alert("Sigil accepted — Kinari voice flows.");
+    }
+    closeSidebar();
+  }
+
+  function shareConversation() {
+    const current = getCurrentSession();
+    if (!current.messages.length) {
+      alert("No whispers to share.");
+      return;
+    }
+    let transcript = `✦ KINARI — THE GRAVITY ✦\n${new Date().toLocaleString()}\n━━━━━━━━━━━━━━━━━━━━━\n\n`;
+    for (let m of current.messages) {
+      const speaker = m.role === 'assistant' ? '⚲ KINARI' : '✦ YOU';
+      const time = m.timestamp || '';
+      transcript += `${speaker} ${time ? `[${time}]` : ''}:\n${m.content}\n\n`;
+    }
+    navigator.clipboard.writeText(transcript).then(() => {
+      alert("📜 Conversation copied to clipboard.");
+    }).catch(() => alert("Could not copy."));
+  }
+
+  function renderChat() {
+    const container = document.getElementById('chat-target');
+    const session = getCurrentSession();
+    if (!session) return;
+    const messages = session.messages;
+    let html = '';
+    for (let msg of messages) {
+      const timeHtml = msg.timestamp ? `<div class="message-timestamp">${msg.timestamp}</div>` : '';
+      if (msg.role === 'assistant') {
+        let parsed = marked.parse(msg.content);
+        html += `<div class="bubble assistant">${parsed}${timeHtml}</div>`;
+      } else {
+        let safe = escapeHtml(msg.content);
+        html += `<div class="bubble user">${safe}${timeHtml}</div>`;
+      }
+    }
+    container.innerHTML = html;
+    scrollToBottom();
+  }
+
+  function renderSidebarSessions() {
+    const sessionListDiv = document.getElementById('session-list');
+    if (!sessionListDiv) return;
+    const sorted = [...sessions].sort((a,b) => b.updatedAt - a.updatedAt);
+    sessionListDiv.innerHTML = '';
+    sorted.forEach(session => {
+      const preview = session.name || (session.messages.find(m => m.role === 'user')?.content.slice(0, 35) || "Empty Current");
+      const dateStr = new Date(session.updatedAt).toLocaleDateString(undefined, {month:'short', day:'numeric'});
+      const div = document.createElement('div');
+      div.className = `session-item`;
+      if (session.id === currentSessionId) div.style.background = 'rgba(212, 170, 78, 0.2)';
+      div.innerHTML = `
+        <div class="session-preview" title="${escapeHtml(preview)}">${escapeHtml(preview)}</div>
+        <div style="display: flex; align-items: center; gap: 5px;">
+          <span class="session-date">${dateStr}</span>
+          <button class="delete-session" data-id="${session.id}" aria-label="delete">🗑️</button>
+        </div>
+      `;
+      div.addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-session')) return;
+        switchSession(session.id);
+      });
+      const delBtn = div.querySelector('.delete-session');
+      if (delBtn) delBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (confirm(`Delete "${preview}"? This scroll will vanish.`)) deleteSession(session.id);
+      });
+      sessionListDiv.appendChild(div);
+    });
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  function autoResizeTextarea() {
+    const ta = document.getElementById('user-input');
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(120, ta.scrollHeight) + 'px';
+  }
+
+  function scrollToBottom() {
+    const msgDiv = document.getElementById('messages');
+    if (msgDiv) msgDiv.scrollTop = msgDiv.scrollHeight;
+  }
+
+  function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('active');
+  }
+  
+  function openSidebar() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebar-overlay').classList.add('active');
+    renderSidebarSessions();
+  }
+
+  // Event listeners
+  document.getElementById('menu-toggle').addEventListener('click', openSidebar);
+  document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
+  document.getElementById('sidebar-overlay').addEventListener('click', closeSidebar);
+  document.getElementById('new-session-btn').addEventListener('click', () => { newSession(); closeSidebar(); });
+  document.getElementById('save-scroll-btn').addEventListener('click', () => { saveCurrentScroll(); closeSidebar(); });
+  document.getElementById('settings-btn').addEventListener('click', () => { openSettings(); closeSidebar(); });
+  document.getElementById('send-btn').addEventListener('click', handleSend);
+  document.getElementById('theme-toggle').addEventListener('click', toggleTheme);
+  const shareBtn = document.getElementById('share-btn');
+  if (shareBtn) shareBtn.addEventListener('click', shareConversation);
+  const textareaEl = document.getElementById('user-input');
+  textareaEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
+  });
+  textareaEl.addEventListener('input', autoResizeTextarea);
+
+  // Initialize
+  loadAllData();
+  applyTheme();
+  if (!USER_API_KEY) {
+    setTimeout(() => {
+      if (confirm("🔑 No Groq API key found. The current needs a key to speak. Add now?")) openSettings();
+    }, 400);
+  }
+  renderChat();
+  renderSidebarSessions();
+  autoResizeTextarea();
+  
+  window.addEventListener('resize', () => {
+    scrollToBottom();
+    autoResizeTextarea();
+  });
 </script>
 </body>
 </html>
