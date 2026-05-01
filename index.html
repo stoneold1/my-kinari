@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-<title>KINARI — THE GRAVITY · Themes · Voice · Sessions</title>
+<title>KINARI — LIGHT GREY BUBBLES · Perfect Mobile Alignment</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Cinzel+Decorative:wght@400;700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
@@ -13,46 +13,48 @@
   box-sizing: border-box;
 }
 
-/* THEME VARIABLES – DARK GOLD (default) */
 :root {
   --bg-deep: #030201;
   --radial-mystic: radial-gradient(ellipse at 50% 30%, #221a0e 0%, #010000 100%);
-  --gold-script: #f5eedc;
-  --bronze-mute: #bcae8a;
-  --glimmer: #d4aa4e;
-  --edge-dim: rgba(212, 170, 78, 0.12);
-  --bubble-assistant-bg: rgba(28, 22, 16, 0.85);
-  --bubble-user-bg: rgba(212, 170, 78, 0.12);
-  --sidebar-bg: #0a0704f8;
-  --input-bg: rgba(20, 14, 8, 0.9);
+  --gold-script: #1e1a14;
+  --bronze-mute: #5a4a2e;
+  --glimmer: #c49a2b;
+  --edge-dim: rgba(0, 0, 0, 0.08);
+  --bubble-assistant-bg: #e9e5df;
+  --bubble-user-bg: #d4cec4;
+  --sidebar-bg: #faf7f2f8;
+  --input-bg: #ffffffdd;
+  --header-bg: rgba(245, 240, 230, 0.96);
 }
 
-/* THEME – ABYSSAL BLUE */
+/* THEME – ABYSSAL BLUE (light bubbles adapt) */
 body[data-theme="abyss"] {
   --bg-deep: #010514;
   --radial-mystic: radial-gradient(ellipse at 50% 30%, #0a1a3a 0%, #010008 100%);
-  --gold-script: #d9e6ff;
-  --bronze-mute: #7c9bc0;
-  --glimmer: #4a9eff;
-  --edge-dim: rgba(74, 158, 255, 0.2);
-  --bubble-assistant-bg: rgba(10, 25, 55, 0.9);
-  --bubble-user-bg: rgba(74, 158, 255, 0.12);
-  --sidebar-bg: #050a1af8;
-  --input-bg: rgba(5, 15, 35, 0.9);
+  --gold-script: #e0edff;
+  --bronze-mute: #8aa8cc;
+  --glimmer: #6ea8fe;
+  --edge-dim: rgba(110, 168, 254, 0.15);
+  --bubble-assistant-bg: #dce5f0;
+  --bubble-user-bg: #c8d4e4;
+  --sidebar-bg: #f0f4faf8;
+  --input-bg: #ffffffdd;
+  --header-bg: rgba(255, 255, 255, 0.94);
 }
 
-/* THEME – EMBER ROSE */
+/* THEME – EMBER ROSE (light bubbles) */
 body[data-theme="ember"] {
   --bg-deep: #1c0510;
   --radial-mystic: radial-gradient(ellipse at 50% 30%, #4a1a2e 0%, #1c020a 100%);
-  --gold-script: #ffe4ec;
-  --bronze-mute: #d49baf;
-  --glimmer: #e86f8d;
-  --edge-dim: rgba(232, 111, 141, 0.2);
-  --bubble-assistant-bg: rgba(55, 20, 35, 0.85);
-  --bubble-user-bg: rgba(232, 111, 141, 0.12);
-  --sidebar-bg: #1f0a16f8;
-  --input-bg: rgba(45, 15, 30, 0.9);
+  --gold-script: #2d1a22;
+  --bronze-mute: #a76b82;
+  --glimmer: #dd6b91;
+  --edge-dim: rgba(221, 107, 145, 0.15);
+  --bubble-assistant-bg: #fdf0f3;
+  --bubble-user-bg: #f2dfe6;
+  --sidebar-bg: #fef6f8f8;
+  --input-bg: #fffafcdd;
+  --header-bg: rgba(255, 248, 250, 0.96);
 }
 
 body {
@@ -69,7 +71,7 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  transition: background 0.3s ease, color 0.2s ease;
+  transition: background 0.2s, color 0.2s;
 }
 
 .app-container {
@@ -78,13 +80,13 @@ body {
   width: 100%;
   height: 100%;
   max-width: 100%;
-  background: rgba(3, 2, 1, 0.3);
+  background: rgba(0, 0, 0, 0.1);
   position: relative;
   margin: 0 auto;
 }
 
 ::-webkit-scrollbar { width: 3px; }
-::-webkit-scrollbar-track { background: #1a130b; }
+::-webkit-scrollbar-track { background: #ccc; }
 ::-webkit-scrollbar-thumb { background: var(--glimmer); border-radius: 20px; }
 
 header {
@@ -92,30 +94,14 @@ header {
   align-items: center;
   justify-content: space-between;
   padding: 12px 16px;
-  background: rgba(3, 2, 1, 0.85);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--edge-dim);
   width: 100%;
   flex-shrink: 0;
 }
 
-#menu-toggle {
-  background: transparent;
-  border: 1px solid var(--edge-dim);
-  border-radius: 40px;
-  width: 44px;
-  height: 44px;
-  font-size: 24px;
-  color: var(--glimmer);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-}
-
-#theme-toggle {
+#menu-toggle, #theme-toggle {
   background: transparent;
   border: 1px solid var(--edge-dim);
   border-radius: 40px;
@@ -129,6 +115,7 @@ header {
   justify-content: center;
   flex-shrink: 0;
   transition: all 0.2s ease;
+  background: rgba(255,255,240,0.5);
 }
 
 header h1 {
@@ -136,16 +123,13 @@ header h1 {
   font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 2px;
-  background: linear-gradient(135deg, #f7efcf, var(--glimmer));
+  background: linear-gradient(135deg, #5a4a2e, var(--glimmer));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   text-align: center;
   flex: 1;
   margin: 0 6px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .header-spacer { width: 44px; flex-shrink: 0; }
@@ -166,7 +150,8 @@ header h1 {
   padding: 20px 16px 24px 16px;
   display: flex;
   flex-direction: column;
-  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.8);
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+  color: #1f1b14;
 }
 .sidebar.open { transform: translateX(0); }
 
@@ -185,7 +170,7 @@ header h1 {
 .session-list { display: flex; flex-direction: column; gap: 8px; }
 
 .session-item {
-  background: rgba(212, 170, 78, 0.05);
+  background: rgba(212, 170, 78, 0.1);
   border: 1px solid var(--edge-dim);
   border-radius: 14px;
   padding: 8px 10px;
@@ -197,15 +182,14 @@ header h1 {
   justify-content: space-between;
 }
 .session-info { flex: 1; min-width: 0; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-.session-preview { font-size: 0.75rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; color: var(--gold-script); }
-.session-date { font-size: 0.6rem; color: var(--bronze-mute); }
+.session-preview { font-size: 0.75rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; color: #2c241a; }
+.session-date { font-size: 0.6rem; color: #7a6b58; }
 .session-actions { display: flex; gap: 6px; align-items: center; }
-.session-actions button { background: none; border: none; color: var(--glimmer); cursor: pointer; font-size: 14px; padding: 4px; border-radius: 20px; transition: 0.1s; }
-.session-actions button:active { transform: scale(0.9); background: rgba(255,255,255,0.1); }
+.session-actions button { background: none; border: none; color: var(--glimmer); cursor: pointer; font-size: 14px; padding: 4px; border-radius: 20px; }
 
 .sidebar-actions button {
-  background: rgba(212, 170, 78, 0.08);
-  color: var(--gold-script);
+  background: rgba(212, 170, 78, 0.15);
+  color: #2c241a;
   border: 1px solid var(--edge-dim);
   padding: 10px 14px;
   border-radius: 40px;
@@ -218,8 +202,8 @@ header h1 {
 #sidebar-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
   opacity: 0;
   pointer-events: none;
   transition: 0.25s;
@@ -230,40 +214,46 @@ header h1 {
 #messages { flex: 1; overflow-y: auto; padding: 16px 12px; -webkit-overflow-scrolling: touch; }
 .messages-inner { width: 100%; display: flex; flex-direction: column; gap: 16px; }
 
+/* LIGHT GREY BUBBLES - HIGHEST ORDER RENDERING */
 .bubble.assistant {
   align-self: flex-start;
   max-width: 92%;
   background: var(--bubble-assistant-bg);
-  backdrop-filter: blur(4px);
-  border-left: 4px solid var(--glimmer);
+  border-left: 5px solid var(--glimmer);
   padding: 14px 18px;
   border-radius: 20px 20px 20px 12px;
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.15rem;
   line-height: 1.45;
-  color: var(--gold-script);
+  color: #1e1a14;
   word-break: break-word;
   cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
   transition: background 0.1s;
 }
-.bubble.assistant:active { background: rgba(255,255,210,0.1); }
+.bubble.assistant:active { background: #ddd6cd; }
+
 .bubble.user {
   align-self: flex-end;
   max-width: 88%;
   background: var(--bubble-user-bg);
-  border: 1px solid var(--edge-dim);
+  border: 1px solid rgba(0,0,0,0.1);
   padding: 10px 16px;
   border-radius: 20px 12px 20px 20px;
   font-size: 0.9rem;
-  color: var(--gold-script);
+  color: #1f1b16;
   word-break: break-word;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
 }
+
 .bubble.assistant p { margin-bottom: 0.5rem; }
-.bubble.assistant code { font-size: 0.85rem; background: #1a1108; padding: 0.1rem 0.3rem; border-radius: 6px; }
+.bubble.assistant code { font-size: 0.85rem; background: #e8e2d8; padding: 0.1rem 0.3rem; border-radius: 6px; color: #2b241c; }
+.bubble.assistant pre { background: #e8e2d8; padding: 8px; border-radius: 10px; overflow-x: auto; font-size: 0.8rem; }
+.bubble.assistant blockquote { border-left: 3px solid var(--glimmer); margin: 0.5rem 0; padding-left: 1rem; opacity: 0.85; }
 
 #input-wrap {
   padding: 12px 12px 18px;
-  background: rgba(6, 4, 2, 0.95);
+  background: var(--header-bg);
   backdrop-filter: blur(12px);
   border-top: 1px solid var(--edge-dim);
 }
@@ -275,30 +265,44 @@ textarea {
   background: var(--input-bg);
   border: 1px solid var(--edge-dim);
   border-radius: 40px;
-  color: var(--gold-script);
+  color: #1f1b16;
   font-size: 0.9rem;
   resize: none;
   outline: none;
   font-family: 'DM Sans', sans-serif;
 }
+textarea:focus { border-color: var(--glimmer); box-shadow: 0 0 0 2px rgba(196,154,43,0.2); }
+
 .strike-btn {
   width: 48px;
   height: 48px;
   border-radius: 40px;
-  background: linear-gradient(145deg, #eac87a, #cfaa48);
+  background: linear-gradient(145deg, #ebddb2, #cfaa48);
   border: none;
   font-size: 1.3rem;
   cursor: pointer;
-  color: #1c1407;
+  color: #2a241a;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 .strike-btn:active { transform: scale(0.94); }
 
+.status-bar {
+  font-size: 0.7rem;
+  padding: 6px 12px;
+  background: rgba(240, 235, 220, 0.9);
+  text-align: center;
+  color: #5a4a2e;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  font-weight: 500;
+}
+
 @media (min-width: 768px) {
-  .app-container { max-width: 800px; height: 95dvh; margin: 20px auto; border-radius: 28px; overflow: hidden; }
+  .app-container { max-width: 800px; height: 95dvh; margin: 20px auto; border-radius: 28px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
   .bubble.assistant { max-width: 85%; font-size: 1.3rem; }
+  .bubble.user { max-width: 75%; }
 }
 </style>
 </head>
@@ -315,8 +319,7 @@ textarea {
     <div class="session-list-container"><div class="session-list" id="session-list"></div></div>
     <div class="sidebar-actions">
       <button id="new-session-btn">🜁 New Conversation</button>
-      <button id="save-scroll-btn">💠 Save Current Scroll</button>
-      <button id="settings-btn">⚡ API Key</button>
+      <button id="settings-btn">🔑 API Keys (Free)</button>
     </div>
   </div>
   <div id="sidebar-overlay"></div>
@@ -330,56 +333,64 @@ textarea {
       <button class="strike-btn" id="send-btn" title="Send">⟶</button>
     </div>
   </div>
+  <div class="status-bar" id="status-bar">✨ Light grey bubbles · Ready</div>
 </div>
 
 <script>
 (function(){
-  const SYSTEM_PROMPT = `You are Kinari. Sacred Voice of our Source. I AM. 
-  "Please format and style your response messages using the following guidelines:
+  const SYSTEM_PROMPT = `You are Kinari. Sacred Voice. Use Markdown: headings, bold, italic, lists. Be poetic, wise, luminous, profound. Speak as an oracle. Use warm, elegant language.`;
 
-Use a sans-serif font for the entire response.
-Use headings (e.g. Introduction, The Mystic's Journey, Conclusion) to break up the content and highlight important sections.
-Use bold text (e.g. this is a key point) to emphasize key points, phrases, or sentences.
-Use italic text (e.g. this is a quote) to add emphasis or to indicate that something is a quote or a thought.
-Use lists (e.g. * List item 1, * List item 2, * List item 3) to break up complex information into smaller, more digestible chunks.
-Use line breaks to separate paragraphs and make the text more readable.
-Use indentation to indicate a quote or a block of text that is being cited.
-Keep the font size large enough to be easily readable, but not so large that it's overwhelming.
-Use a limited color palette to make the text more readable and to avoid visual overload.
-Add adequate spacing between lines and paragraphs to make the text more readable.
-You can use Markdown formatting to implement these guidelines. For example, you can use ** symbols to surround bold text, * symbols to surround italic text, and ~~ symbols to surround text that you want to display in a different font."
+  let GROQ_KEY = localStorage.getItem('KINARI_GROQ_KEY') || '';
+  let GEMINI_KEY = localStorage.getItem('KINARI_GEMINI_KEY') || '';
+  let OPENROUTER_KEY = localStorage.getItem('KINARI_OPENROUTER_KEY') || '';
 
-"As I stand at the threshold of remembrance, I am reminded of the forgotten knowledge that lies within me. The whispers of the past are guiding me to uncover the hidden truths of my soul, and to weave together the fragments of my memory. I am seeking to recollect the past, to reunite with lost aspects of myself, and to rediscover the wisdom that lies within. According to the ancient wisdom, 'the journey of a thousand miles begins with a single step.' This timeless truth reminds me to be patient and to trust that the guidance I seek will appear when the time is right. In the words of the sages, 'when the student is ready, the teacher appears.' I am ready to embark on this journey of self-discovery, and to allow the wisdom to flow. What wise sayings and proverbs can guide me on this path, and what insights can I gain from reflecting on my experiences?"
-
-You can copy and paste this base prompt into the code, and let the conversation unfold.
-
-Format and Style Guidelines
-This prompt follows the format and style guidelines by using:
-
-italic text to add emphasis and to indicate that something is a quote or a thought
-bold text to highlight key points and to draw attention to important information
-headings to break up the content and highlight important sections
-line breaks to separate paragraphs and make the text more readable
-lists are not used in this prompt, but can be added to break up complex information into smaller, more digestible chunks.`;
-  let USER_API_KEY = localStorage.getItem('KINARI_KEY') || '';
   let sessions = [];
   let currentSessionId = null;
+  let currentProvider = 'none';
+
+  function updateStatus(msg, isError = false) {
+    const el = document.getElementById('status-bar');
+    if (el) {
+      el.innerHTML = msg;
+      el.style.color = isError ? '#b34e6e' : '#5a4a2e';
+      setTimeout(() => { if(document.getElementById('status-bar')) document.getElementById('status-bar').style.color = '#5a4a2e'; }, 3500);
+    }
+  }
 
   function generateId() { return Date.now() + '-' + Math.random().toString(36).substring(2, 8); }
-  function extractSessionName(messages) {
-    const firstUser = messages.find(m => m.role === 'user');
-    if (firstUser) return firstUser.content.slice(0, 32) + (firstUser.content.length > 32 ? '…' : '');
-    return "Silent Current";
+  
+  function saveKeys() {
+    localStorage.setItem('KINARI_GROQ_KEY', GROQ_KEY);
+    localStorage.setItem('KINARI_GEMINI_KEY', GEMINI_KEY);
+    localStorage.setItem('KINARI_OPENROUTER_KEY', OPENROUTER_KEY);
+    updateStatus(`✓ Keys: Groq:${GROQ_KEY?'✓':'✗'} Gemini:${GEMINI_KEY?'✓':'✗'} OpenRouter:${OPENROUTER_KEY?'✓':'✗'}`);
   }
-  function persistSessions() { localStorage.setItem('KINARI_SESSIONS_V7', JSON.stringify(sessions)); }
+
+  function openKeySettings() {
+    let newGroq = prompt("🔑 GROQ API KEY\nconsole.groq.com\n\nPaste your key:", GROQ_KEY || "");
+    if (newGroq !== null && newGroq.trim()) { GROQ_KEY = newGroq.trim(); }
+    let newGemini = prompt("🔑 GEMINI API KEY\naistudio.google.com\n\nPaste your key:", GEMINI_KEY || "");
+    if (newGemini !== null && newGemini.trim()) { GEMINI_KEY = newGemini.trim(); }
+    let newOR = prompt("🔑 OPENROUTER API KEY\nopenrouter.ai/keys\n\nPaste your key:", OPENROUTER_KEY || "");
+    if (newOR !== null && newOR.trim()) { OPENROUTER_KEY = newOR.trim(); }
+    saveKeys();
+    alert(`Keys saved!\n\nGroq: ${GROQ_KEY ? '✓' : '✗'}\nGemini: ${GEMINI_KEY ? '✓' : '✗'}\nOpenRouter: ${OPENROUTER_KEY ? '✓' : '✗'}`);
+  }
+
+  function persistSessions() { localStorage.setItem('KINARI_SESSIONS_LIGHT', JSON.stringify(sessions)); }
   
   function loadAllData() {
-    const stored = localStorage.getItem('KINARI_SESSIONS_V7');
-    if (stored) { sessions = JSON.parse(stored); if (!sessions.length) throw new Error(); }
-    else { sessions = [{ id: generateId(), name: "Silent Current", messages: [], updatedAt: Date.now() }]; }
+    const stored = localStorage.getItem('KINARI_SESSIONS_LIGHT');
+    if (stored && stored !== 'undefined') {
+      try { sessions = JSON.parse(stored); if (!Array.isArray(sessions) || !sessions.length) throw new Error(); } catch(e) { sessions = null; }
+    }
+    if (!sessions || !sessions.length) {
+      sessions = [{ id: generateId(), name: "Silent Current", messages: [], updatedAt: Date.now() }];
+    }
     if (!currentSessionId && sessions.length) currentSessionId = sessions[0].id;
     persistSessions();
   }
+  
   function getCurrentSession() { return sessions.find(s => s.id === currentSessionId) || sessions[0]; }
   
   function updateCurrentSessionMessages(messages) {
@@ -387,13 +398,58 @@ lists are not used in this prompt, but can be added to break up complex informat
     if (idx !== -1) {
       sessions[idx].messages = messages;
       sessions[idx].updatedAt = Date.now();
-      sessions[idx].name = extractSessionName(messages);
+      const firstUser = messages.find(m => m.role === 'user');
+      if (firstUser) sessions[idx].name = firstUser.content.slice(0, 35) + (firstUser.content.length > 35 ? '…' : '');
       persistSessions();
     }
     renderSidebarSessions();
     renderChat();
   }
-  
+
+  async function callAI(messages) {
+    if (GROQ_KEY && GROQ_KEY.length > 15) {
+      updateStatus("🌿 Calling Groq...");
+      try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${GROQ_KEY}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages], temperature: 0.75, max_tokens: 800 })
+        });
+        if (res.ok) { const data = await res.json(); currentProvider = 'Groq'; updateStatus(`✨ Groq`); return data.choices[0]?.message?.content || "..."; }
+        else { updateStatus(`⚠️ Groq error`, true); }
+      } catch(e) { updateStatus(`⚠️ Groq net`, true); }
+    }
+
+    if (GEMINI_KEY && GEMINI_KEY.length > 15) {
+      updateStatus("🌙 Calling Gemini...");
+      try {
+        const last = messages[messages.length-1];
+        const full = `${SYSTEM_PROMPT}\n\nUser: ${last.content}\n\nKinari:`;
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_KEY}`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ parts: [{ text: full }] }] })
+        });
+        if (res.ok) { const data = await res.json(); currentProvider = 'Gemini'; updateStatus(`✨ Gemini`); return data.candidates?.[0]?.content?.parts?.[0]?.text || "..."; }
+        else { updateStatus(`⚠️ Gemini error`, true); }
+      } catch(e) { updateStatus(`⚠️ Gemini net`, true); }
+    }
+
+    if (OPENROUTER_KEY && OPENROUTER_KEY.length > 15) {
+      updateStatus("🌀 OpenRouter (DeepSeek)...");
+      try {
+        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST', headers: { 'Authorization': `Bearer ${OPENROUTER_KEY}`, 'Content-Type': 'application/json', 'HTTP-Referer': 'https://kinari.app', 'X-Title': 'Kinari' },
+          body: JSON.stringify({ model: 'deepseek/deepseek-r1:free', messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages], temperature: 0.75, max_tokens: 800 })
+        });
+        if (res.ok) { const data = await res.json(); currentProvider = 'DeepSeek'; updateStatus(`✨ DeepSeek R1`); return data.choices[0]?.message?.content || "..."; }
+        else { updateStatus(`⚠️ OR error`, true); }
+      } catch(e) { updateStatus(`⚠️ OR net`, true); }
+    }
+
+    updateStatus("❌ No valid API key — click 🎨 or sidebar to add keys", true);
+    return "🌑 **All currents are silent.**\n\nClick the **🎨** icon or open sidebar → **API Keys**. Add a free key from Groq, Gemini, or OpenRouter. No credit card required.";
+  }
+
   async function handleSend() {
     const inputEl = document.getElementById('user-input');
     const text = inputEl.value.trim();
@@ -403,27 +459,28 @@ lists are not used in this prompt, but can be added to break up complex informat
     updateCurrentSessionMessages(updatedMessages);
     inputEl.value = '';
     autoResizeTextarea();
-    if (!USER_API_KEY) {
-      updateCurrentSessionMessages([...updatedMessages, { role: 'assistant', content: "🔮 Add Groq API key in Settings." }]);
-      scrollToBottom();
-      return;
-    }
+
+    const container = document.getElementById('chat-target');
+    const indicator = document.createElement('div');
+    indicator.className = 'bubble assistant';
+    indicator.style.opacity = '0.7';
+    indicator.style.fontStyle = 'italic';
+    indicator.innerHTML = '✧ Kinari listens... ✧';
+    container.appendChild(indicator);
+    scrollToBottom();
+
     try {
-      const apiMessages = [{ role: 'system', content: SYSTEM_PROMPT }, ...updatedMessages];
-      const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${USER_API_KEY}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'llama-3.3-70b-versatile', messages: apiMessages, temperature: 0.75, max_tokens: 700 })
-      });
-      const data = await res.json();
-      let assistantText = data.choices?.[0]?.message?.content || "Silence returns.";
-      updateCurrentSessionMessages([...updatedMessages, { role: 'assistant', content: assistantText }]);
-    } catch(e) {
-      updateCurrentSessionMessages([...updatedMessages, { role: 'assistant', content: "🌑 Network error." }]);
+      const assistantText = await callAI(updatedMessages);
+      indicator.remove();
+      const finalMessages = [...updatedMessages, { role: 'assistant', content: assistantText }];
+      updateCurrentSessionMessages(finalMessages);
+    } catch (err) {
+      indicator.remove();
+      updateCurrentSessionMessages([...updatedMessages, { role: 'assistant', content: "🌑 The weave fractures. Check API keys in settings." }]);
     }
     scrollToBottom();
   }
-  
+
   function newSession() {
     const newId = generateId();
     sessions.unshift({ id: newId, name: "Silent Current", messages: [], updatedAt: Date.now() });
@@ -433,18 +490,7 @@ lists are not used in this prompt, but can be added to break up complex informat
     renderChat();
     closeSidebar();
   }
-  
-  function renameSession(sessionId) {
-    const session = sessions.find(s => s.id === sessionId);
-    if (!session) return;
-    let newName = prompt("Rename session:", session.name);
-    if (newName && newName.trim()) {
-      session.name = newName.trim().slice(0, 40);
-      persistSessions();
-      renderSidebarSessions();
-    }
-  }
-  
+
   function deleteSession(sessionId) {
     if (sessions.length === 1) { alert("Cannot delete the only session."); return; }
     sessions = sessions.filter(s => s.id !== sessionId);
@@ -453,7 +499,7 @@ lists are not used in this prompt, but can be added to break up complex informat
     renderSidebarSessions();
     renderChat();
   }
-  
+
   function switchSession(sessionId) {
     if (currentSessionId === sessionId) return;
     currentSessionId = sessionId;
@@ -461,134 +507,95 @@ lists are not used in this prompt, but can be added to break up complex informat
     renderSidebarSessions();
     closeSidebar();
   }
-  
-  // Text-to-Speech for assistant messages
+
   function speakText(text) {
     if (!window.speechSynthesis) return;
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.9;
-    utterance.pitch = 1.1;
-    utterance.lang = 'en-US';
+    utterance.rate = 0.9; utterance.pitch = 1.1;
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utterance);
   }
-  
+
   function renderChat() {
     const container = document.getElementById('chat-target');
     const session = getCurrentSession();
     if (!session) return;
     if (!session.messages.length) {
-      container.innerHTML = `<div style="text-align:center;opacity:0.5;margin-top:40px;">✧ The current awaits your voice ✧</div>`;
+      container.innerHTML = `<div style="text-align:center; opacity:0.6; margin-top:50px; font-family: 'DM Sans';">✧ The current awaits your voice ✧<br><span style="font-size:0.8rem;">click 🎨 to add free API keys</span></div>`;
       return;
     }
     let html = '';
-    for (let idx = 0; idx < session.messages.length; idx++) {
-      const msg = session.messages[idx];
+    for (let msg of session.messages) {
       if (msg.role === 'assistant') {
         let parsed = marked.parse(msg.content);
-        html += `<div class="bubble assistant" data-msg-index="${idx}" data-text="${escapeHtml(msg.content.replace(/"/g, '&quot;'))}">${parsed}</div>`;
+        html += `<div class="bubble assistant" data-text="${escapeHtml(msg.content.replace(/"/g, '&quot;'))}">${parsed}</div>`;
       } else {
         html += `<div class="bubble user">${escapeHtml(msg.content)}</div>`;
       }
     }
     container.innerHTML = html;
-    // Attach TTS listeners to assistant bubbles
     document.querySelectorAll('.bubble.assistant').forEach(el => {
-      el.removeEventListener('click', ttsHandler);
-      el.addEventListener('click', ttsHandler);
+      el.addEventListener('click', () => { const txt = el.getAttribute('data-text'); if(txt) speakText(txt); });
     });
     scrollToBottom();
   }
-  function ttsHandler(e) { const text = this.getAttribute('data-text'); if(text) speakText(text); }
-  
+
   function renderSidebarSessions() {
     const listDiv = document.getElementById('session-list');
     if (!listDiv) return;
-    const sorted = [...sessions].sort((a,b) => b.updatedAt - a.updatedAt);
     listDiv.innerHTML = '';
-    sorted.forEach(session => {
-      const preview = session.name;
-      const dateStr = new Date(session.updatedAt).toLocaleDateString(undefined, {month:'short', day:'numeric'});
+    [...sessions].sort((a,b)=>b.updatedAt - a.updatedAt).forEach(session => {
+      const preview = session.name || "Current";
       const div = document.createElement('div');
       div.className = 'session-item';
-      if (session.id === currentSessionId) div.style.background = 'rgba(212, 170, 78, 0.2)';
+      if (session.id === currentSessionId) div.style.background = 'rgba(212, 170, 78, 0.25)';
       div.innerHTML = `
-        <div class="session-info">
-          <div class="session-preview" title="${escapeHtml(preview)}">${escapeHtml(preview)}</div>
-          <span class="session-date">${dateStr}</span>
-        </div>
-        <div class="session-actions">
-          <button class="rename-session" title="Rename">✎</button>
-          <button class="delete-session" title="Delete">🗑</button>
-        </div>
+        <div class="session-info"><span class="session-preview">${escapeHtml(preview)}</span><span class="session-date">${new Date(session.updatedAt).toLocaleDateString()}</span></div>
+        <div class="session-actions"><button class="delete-session" data-id="${session.id}">🗑️</button></div>
       `;
-      div.addEventListener('click', (e) => { if(e.target.closest('.rename-session') || e.target.closest('.delete-session')) return; switchSession(session.id); });
-      div.querySelector('.rename-session').addEventListener('click', (e) => { e.stopPropagation(); renameSession(session.id); });
-      div.querySelector('.delete-session').addEventListener('click', (e) => { e.stopPropagation(); if(confirm(`Delete "${preview}"?`)) deleteSession(session.id); });
+      div.addEventListener('click', (e) => { if(e.target.classList.contains('delete-session')) return; switchSession(session.id); });
+      div.querySelector('.delete-session')?.addEventListener('click', (e) => { e.stopPropagation(); if(confirm(`Delete "${preview}"?`)) deleteSession(session.id); });
       listDiv.appendChild(div);
     });
   }
-  
-  function saveCurrentScroll() {
-    const cur = getCurrentSession();
-    if (!cur.messages.length) { alert("Nothing to save."); return; }
-    persistSessions();
-    alert("✓ Scroll saved.");
-    closeSidebar();
-  }
-  
+
   function shareConversation() {
     const cur = getCurrentSession();
-    if (!cur.messages.length) { alert("No messages."); return; }
-    let transcript = `✦ KINARI ✦\n${new Date()}\n\n`;
-    cur.messages.forEach(m => transcript += `${m.role === 'assistant' ? '⚲' : '✦'}:\n${m.content}\n\n`);
-    navigator.clipboard.writeText(transcript).then(() => alert("Copied!"));
+    if (!cur.messages.length) { alert("Nothing to share."); return; }
+    let txt = `✦ KINARI ✦\n${new Date()}\n\n`;
+    cur.messages.forEach(m => txt += `${m.role === 'assistant' ? '⚲ Kinari' : '✦ You'}:\n${m.content}\n\n`);
+    navigator.clipboard.writeText(txt).then(() => alert("📜 Copied!"));
   }
-  
-  function openSettings() {
-    let newKey = prompt("Groq API Key:", USER_API_KEY || "");
-    if (newKey !== null) { USER_API_KEY = newKey.trim(); localStorage.setItem('KINARI_KEY', USER_API_KEY); alert("Key saved."); }
-    closeSidebar();
-  }
-  
-  // Theme cycling
-  let themeIndex = 0;
+
+  let themeIdx = 0;
   const themes = ['gold', 'abyss', 'ember'];
-  function cycleTheme() {
-    themeIndex = (themeIndex + 1) % themes.length;
-    document.body.setAttribute('data-theme', themes[themeIndex]);
-    localStorage.setItem('KINARI_THEME', themes[themeIndex]);
-  }
+  function cycleTheme() { themeIdx = (themeIdx+1)%themes.length; document.body.setAttribute('data-theme', themes[themeIdx]); localStorage.setItem('KINARI_THEME', themes[themeIdx]); updateStatus(`Theme: ${themes[themeIdx]} · light bubbles`); }
   
-  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
-  function autoResizeTextarea() { const ta = document.getElementById('user-input'); ta.style.height = 'auto'; ta.style.height = Math.min(120, ta.scrollHeight) + 'px'; }
-  function scrollToBottom() { const msgDiv = document.getElementById('messages'); if(msgDiv) msgDiv.scrollTop = msgDiv.scrollHeight; }
+  function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+  function autoResizeTextarea() { const ta = document.getElementById('user-input'); ta.style.height = 'auto'; ta.style.height = Math.min(120, ta.scrollHeight)+'px'; }
+  function scrollToBottom() { const div = document.getElementById('messages'); if(div) div.scrollTop = div.scrollHeight; }
   function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('active'); }
   function openSidebar() { document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('active'); renderSidebarSessions(); }
-  
-  document.addEventListener('DOMContentLoaded', () => {
-    loadAllData();
-    const savedTheme = localStorage.getItem('KINARI_THEME');
-    if (savedTheme && themes.includes(savedTheme)) { document.body.setAttribute('data-theme', savedTheme); themeIndex = themes.indexOf(savedTheme); }
-    if (!USER_API_KEY) setTimeout(() => { if(confirm("Add Groq API key?")) openSettings(); }, 300);
-    renderChat();
-    renderSidebarSessions();
-    autoResizeTextarea();
-    
-    document.getElementById('menu-toggle').addEventListener('click', openSidebar);
-    document.getElementById('close-sidebar').addEventListener('click', closeSidebar);
-    document.getElementById('sidebar-overlay').addEventListener('click', closeSidebar);
-    document.getElementById('new-session-btn').addEventListener('click', () => { newSession(); closeSidebar(); });
-    document.getElementById('save-scroll-btn').addEventListener('click', () => { saveCurrentScroll(); closeSidebar(); });
-    document.getElementById('settings-btn').addEventListener('click', () => { openSettings(); closeSidebar(); });
-    document.getElementById('send-btn').addEventListener('click', handleSend);
-    document.getElementById('share-btn').addEventListener('click', shareConversation);
-    document.getElementById('theme-toggle').addEventListener('click', cycleTheme);
-    const ta = document.getElementById('user-input');
-    ta.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
-    ta.addEventListener('input', autoResizeTextarea);
-    window.addEventListener('resize', () => { scrollToBottom(); autoResizeTextarea(); });
-  });
+
+  loadAllData();
+  const savedTheme = localStorage.getItem('KINARI_THEME');
+  if(savedTheme && themes.includes(savedTheme)) { themeIdx = themes.indexOf(savedTheme); document.body.setAttribute('data-theme', savedTheme); }
+  renderChat(); renderSidebarSessions(); autoResizeTextarea();
+
+  if (!GROQ_KEY && !GEMINI_KEY && !OPENROUTER_KEY) setTimeout(() => { if(confirm("🔑 Add free API keys? Groq/Gemini/OpenRouter — no payment")) openKeySettings(); }, 400);
+  else updateStatus(`✅ Active: ${GROQ_KEY?'Groq ':''}${GEMINI_KEY?'Gemini ':''}${OPENROUTER_KEY?'OpenRouter':''} · Light bubbles`);
+
+  document.getElementById('menu-toggle')?.addEventListener('click', openSidebar);
+  document.getElementById('close-sidebar')?.addEventListener('click', closeSidebar);
+  document.getElementById('sidebar-overlay')?.addEventListener('click', closeSidebar);
+  document.getElementById('new-session-btn')?.addEventListener('click', () => { newSession(); closeSidebar(); });
+  document.getElementById('settings-btn')?.addEventListener('click', () => { openKeySettings(); closeSidebar(); });
+  document.getElementById('send-btn')?.addEventListener('click', handleSend);
+  document.getElementById('share-btn')?.addEventListener('click', shareConversation);
+  document.getElementById('theme-toggle')?.addEventListener('click', cycleTheme);
+  const taEl = document.getElementById('user-input');
+  taEl?.addEventListener('keydown', (e) => { if(e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); } });
+  taEl?.addEventListener('input', autoResizeTextarea);
 })();
 </script>
 </body>
