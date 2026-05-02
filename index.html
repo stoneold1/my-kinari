@@ -185,16 +185,6 @@ header {
 }
 
 /* MUMBI TITLE */
-header h1 {
-  font-family: 'Cinzel Decorative', cursive;
-  font-size: 1rem;
-  font-weight: 900;
-  letter-spacing: 3px;
-  text-align: center;
-  flex: 1;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
 .header-title {
   display: flex;
   flex-direction: column;
@@ -552,7 +542,7 @@ textarea::placeholder { color: #aaa; font-weight: normal; }
       <button id="send-btn" title="Send" aria-label="Send message">⟶</button>
     </div>
   </div>
-  <div class="status-bar" id="status-bar">✨ "The voice that pulls wisdom from silence" · Mumbi · Click 🎤 to speak</div>
+  <div class="status-bar" id="status-bar">✨ Mumbi · Click 🔑 in sidebar to add API keys</div>
 </div>
 
 <script>
@@ -575,51 +565,57 @@ textarea::placeholder { color: #aaa; font-weight: normal; }
 
   function updateStatus(msg, isError = false) { 
     const el = document.getElementById('status-bar'); 
-    if(el) { el.innerHTML = msg; if(isError) setTimeout(() => el.innerHTML = '✨ Mumbi · The voice that pulls wisdom from silence', 3000); }
+    if(el) { el.innerHTML = msg; if(isError) setTimeout(() => el.innerHTML = '✨ Mumbi · Click 🔑 in sidebar to add API keys', 4000); }
   }
 
-  // FIXED: API Key function - single modal, proper saving
+  // FIXED FOR MOBILE: Separate prompts for each API key
   function openKeySettings() {
-    const currentGroq = GROQ_KEY || '';
-    const currentGemini = GEMINI_KEY || '';
-    const currentOR = OPENROUTER_KEY || '';
-    
-    const input = prompt(
-      `🔑 MUMBI API KEYS (All free tiers - no payment)\n\n` +
-      `Enter your keys in this format:\n` +
-      `GROQ_KEY | GEMINI_KEY | OPENROUTER_KEY\n\n` +
-      `Current status:\n` +
-      `Groq: ${GROQ_KEY ? '✓ Set (' + GROQ_KEY.substring(0, 10) + '...)' : '✗ Missing'}\n` +
-      `Gemini: ${GEMINI_KEY ? '✓ Set (' + GEMINI_KEY.substring(0, 10) + '...)' : '✗ Missing'}\n` +
-      `OpenRouter: ${OPENROUTER_KEY ? '✓ Set (' + OPENROUTER_KEY.substring(0, 10) + '...)' : '✗ Missing'}\n\n` +
-      `Leave a field blank to keep existing key.\n\n` +
-      `Example: gsk_xxxxx | AIza_xxxxx | sk-or_xxxxx`,
-      `${currentGroq}|${currentGemini}|${currentOR}`
+    // Prompt 1: Groq Key
+    let newGroq = prompt(
+      "🔑 GROQ API KEY (Free - Get from console.groq.com)\n\n" +
+      (GROQ_KEY ? "Current: " + GROQ_KEY.substring(0, 15) + "..." : "No key set") +
+      "\n\nPaste your Groq API key (or leave blank to keep current):",
+      GROQ_KEY
     );
     
-    if (input !== null) {
-      const parts = input.split('|');
-      const newGroq = parts[0]?.trim();
-      const newGemini = parts[1]?.trim();
-      const newOR = parts[2]?.trim();
-      
-      if (newGroq !== undefined && newGroq !== '') GROQ_KEY = newGroq;
-      if (newGemini !== undefined && newGemini !== '') GEMINI_KEY = newGemini;
-      if (newOR !== undefined && newOR !== '') OPENROUTER_KEY = newOR;
-      
-      localStorage.setItem('MUMBI_GROQ_KEY', GROQ_KEY);
-      localStorage.setItem('MUMBI_GEMINI_KEY', GEMINI_KEY);
-      localStorage.setItem('MUMBI_OPENROUTER_KEY', OPENROUTER_KEY);
-      
-      const active = [];
-      if (GROQ_KEY) active.push('Groq ✓');
-      if (GEMINI_KEY) active.push('Gemini ✓');
-      if (OPENROUTER_KEY) active.push('OpenRouter ✓');
-      updateStatus(`🔑 Keys saved. Active: ${active.length ? active.join(', ') : 'None - add keys to speak'}`);
-      
-      if (active.length === 0) {
-        setTimeout(() => alert("No API keys added. Mumbi needs at least one free API key to respond.\n\nGet free keys from:\n• Groq: console.groq.com\n• Gemini: aistudio.google.com\n• OpenRouter: openrouter.ai/keys"), 300);
-      }
+    // Prompt 2: Gemini Key
+    let newGemini = prompt(
+      "🔑 GOOGLE GEMINI API KEY (Free - Get from aistudio.google.com)\n\n" +
+      (GEMINI_KEY ? "Current: " + GEMINI_KEY.substring(0, 15) + "..." : "No key set") +
+      "\n\nPaste your Gemini API key (or leave blank to keep current):",
+      GEMINI_KEY
+    );
+    
+    // Prompt 3: OpenRouter Key
+    let newOR = prompt(
+      "🔑 OPENROUTER API KEY (Free - Get from openrouter.ai/keys)\n\n" +
+      "Includes DeepSeek R1, Llama 3.3 70B, and more for free.\n\n" +
+      (OPENROUTER_KEY ? "Current: " + OPENROUTER_KEY.substring(0, 15) + "..." : "No key set") +
+      "\n\nPaste your OpenRouter API key (or leave blank to keep current):",
+      OPENROUTER_KEY
+    );
+    
+    // Update only if user provided new values (not just pressing Cancel)
+    if (newGroq !== null && newGroq.trim() !== '') GROQ_KEY = newGroq.trim();
+    if (newGemini !== null && newGemini.trim() !== '') GEMINI_KEY = newGemini.trim();
+    if (newOR !== null && newOR.trim() !== '') OPENROUTER_KEY = newOR.trim();
+    
+    // Save to localStorage
+    localStorage.setItem('MUMBI_GROQ_KEY', GROQ_KEY);
+    localStorage.setItem('MUMBI_GEMINI_KEY', GEMINI_KEY);
+    localStorage.setItem('MUMBI_OPENROUTER_KEY', OPENROUTER_KEY);
+    
+    // Show confirmation
+    const active = [];
+    if (GROQ_KEY) active.push('Groq ✓');
+    if (GEMINI_KEY) active.push('Gemini ✓');
+    if (OPENROUTER_KEY) active.push('OpenRouter ✓');
+    
+    if (active.length === 0) {
+      updateStatus("⚠️ No API keys added. Mumbi needs a key to respond.", true);
+      alert("No API keys were added.\n\nMumbi needs at least one free API key to respond.\n\nGet free keys from:\n• Groq: console.groq.com\n• Gemini: aistudio.google.com\n• OpenRouter: openrouter.ai/keys");
+    } else {
+      updateStatus(`✅ Keys saved! Active: ${active.join(', ')}`);
     }
   }
 
@@ -695,7 +691,7 @@ textarea::placeholder { color: #aaa; font-weight: normal; }
       if (e.name === 'AbortError') return "⏱️ Request timed out. Please try again.";
     }
     clearTimeout(timeoutId);
-    return "🌑 All currents silent. Click the 🔑 API Keys button in sidebar to add free keys from Groq, Gemini, or OpenRouter.";
+    return "🌑 All currents silent.\n\nClick the 🔑 API Keys button in the sidebar to add free keys from Groq, Gemini, or OpenRouter.\n\nAll have free tiers — no payment required.";
   }
 
   function processSpeechQueue() {
@@ -717,7 +713,7 @@ textarea::placeholder { color: #aaa; font-weight: normal; }
   function startSpeechInput() {
     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
       updateStatus("❌ Speech recognition not supported", true);
-      alert("Speech recognition requires Chrome, Edge, or Safari.");
+      alert("Speech recognition requires Chrome, Edge, or Safari on mobile.");
       return;
     }
     if (isListening) { if (recognition) recognition.stop(); return; }
@@ -726,7 +722,7 @@ textarea::placeholder { color: #aaa; font-weight: normal; }
     recognition.continuous = false;
     recognition.interimResults = true;
     recognition.lang = 'en-US';
-    recognition.onstart = () => { isListening = true; document.getElementById('mic-btn').classList.add('listening'); updateStatus("🎤 Listening... Speak"); };
+    recognition.onstart = () => { isListening = true; document.getElementById('mic-btn').classList.add('listening'); updateStatus("🎤 Listening... Speak your question"); };
     recognition.onresult = (event) => {
       let final = '';
       for (let i = event.resultIndex; i < event.results.length; i++) if (event.results[i].isFinal) final += event.results[i][0].transcript;
@@ -771,7 +767,7 @@ textarea::placeholder { color: #aaa; font-weight: normal; }
     const container = document.getElementById('chat-target');
     const session = getCurrentSession();
     if (!session.messages.length) {
-      container.innerHTML = '<div style="text-align:center; opacity:0.6; margin-top:50px;">✧ The voice that pulls wisdom from silence ✧<br><span style="font-size:0.8rem;">Click 🎤 and speak to Mumbi</span></div>';
+      container.innerHTML = '<div style="text-align:center; opacity:0.6; margin-top:50px;">✧ The voice that pulls wisdom from silence ✧<br><span style="font-size:0.8rem;">Click 🔑 in sidebar to add API keys, then 🎤 to speak</span></div>';
       return;
     }
     let html = '';
@@ -801,7 +797,7 @@ textarea::placeholder { color: #aaa; font-weight: normal; }
     });
   }
 
-  function shareConversation() { const cur = getCurrentSession(); if (!cur.messages.length) { alert("Nothing to share."); return; } let txt = `⚲ MUMBI — THE GRAVITY ⚲\n${new Date()}\n\n`; cur.messages.forEach(m => txt += `${m.role === 'assistant' ? '⚲ Mumbi' : '✦ You'} [${formatTimestamp(m.timestamp)}]:\n${m.content}\n\n`); navigator.clipboard.writeText(txt).then(() => alert("📜 Conversation copied!")); }
+  function shareConversation() { const cur = getCurrentSession(); if (!cur.messages.length) { alert("Nothing to share."); return; } let txt = `⚲ MUMBI — THE GRAVITY ⚲\n${new Date()}\n\n`; cur.messages.forEach(m => txt += `${m.role === 'assistant' ? '⚲ Mumbi' : '✦ You'} [${formatTimestamp(m.timestamp)}]:\n${m.content}\n\n`); navigator.clipboard.writeText(txt).then(() => alert("📜 Conversation copied to clipboard!")); }
   function toggleSpeechOutput() { speechOutputEnabled = !speechOutputEnabled; localStorage.setItem('MUMBI_SPEECH_ENABLED', speechOutputEnabled); document.getElementById('speech-toggle')?.classList.toggle('speech-off', !speechOutputEnabled); if (!speechOutputEnabled) stopSpeaking(); updateStatus(speechOutputEnabled ? '🔊 Speech ON' : '🔇 Speech OFF'); }
 
   let themeIdx = 0; const themes = ['gold', 'abyss', 'ember'];
@@ -816,7 +812,7 @@ textarea::placeholder { color: #aaa; font-weight: normal; }
   if(savedTheme && themes.includes(savedTheme)) { themeIdx = themes.indexOf(savedTheme); document.body.setAttribute('data-theme', savedTheme); }
   renderChat(); renderSidebarSessions();
   
-  // Check for keys on load with better messaging
+  // Check for keys on load
   if (!GROQ_KEY && !GEMINI_KEY && !OPENROUTER_KEY) {
     setTimeout(() => { 
       if(confirm("🔑 Welcome to Mumbi!\n\nNo API keys found. Mumbi needs at least one free API key to respond.\n\nClick OK to add your free keys from Groq, Gemini, or OpenRouter.\n\n(No payment required - all have free tiers)")) {
@@ -824,10 +820,14 @@ textarea::placeholder { color: #aaa; font-weight: normal; }
       }
     }, 800);
   } else {
-    updateStatus(`✨ Mumbi ready · ${GROQ_KEY ? 'Groq ✓ ' : ''}${GEMINI_KEY ? 'Gemini ✓ ' : ''}${OPENROUTER_KEY ? 'OpenRouter ✓' : ''}`);
+    const active = [];
+    if (GROQ_KEY) active.push('Groq');
+    if (GEMINI_KEY) active.push('Gemini');
+    if (OPENROUTER_KEY) active.push('OpenRouter');
+    updateStatus(`✨ Mumbi ready · ${active.join(', ')} active · Click 🎤 to speak`);
   }
   
-  // FIXED: Ensure all button event listeners are properly bound
+  // Event Listeners
   document.getElementById('menu-toggle')?.addEventListener('click', openSidebar);
   document.getElementById('close-sidebar')?.addEventListener('click', closeSidebar);
   document.getElementById('sidebar-overlay')?.addEventListener('click', closeSidebar);
