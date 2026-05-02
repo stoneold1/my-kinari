@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
-<title>⚲ MUMBI — THE GRAVITY ⚲ · Deep Orange · Abyss · Ember</title>
+<title>⚲ MUMBI — THE GRAVITY ⚲ · Lucida Calligraphy Title</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -12,15 +12,15 @@ body, button, input, textarea, .bubble, .sidebar, .status-bar {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-/* ========== DEEP ORANGE THEME (Vibrant, Aptoide-style) ========== */
+/* ========== DEEP ORANGE THEME ========== */
 body[data-theme="orange"] {
-  --glimmer: #ff8c42;
-  --gold-dark: #e06e1a;
+  --glimmer: #ff6b1a;
+  --gold-dark: #e05a0a;
   --text-dark: #2a1a0a;
   --text-light: #fff5e8;
   --text-white: #ffffff;
-  --bg-gradient: linear-gradient(135deg, #ffedd5 0%, #ffd7a0 100%);
-  --bubble-user: #ffe0b5;
+  --bg-gradient: linear-gradient(135deg, #fff0e0 0%, #ffe0c0 100%);
+  --bubble-user: #ffefdf;
   --bubble-assistant: #ffffff;
   --sidebar-bg: rgba(255, 245, 235, 0.96);
   --header-bg: rgba(255, 245, 235, 0.96);
@@ -31,8 +31,8 @@ body[data-theme="orange"] {
   --session-text: #2a1a0a;
   --status-bg: rgba(0,0,0,0.08);
   --status-text: #2a1a0a;
-  --timestamp-text: #8a6a4a;
-  --placeholder-text: #b89a6a;
+  --timestamp-text: #b87a4a;
+  --placeholder-text: #c09a6a;
   --btn-gradient-start: #ff8c42;
   --btn-gradient-end: #e06e1a;
 }
@@ -81,8 +81,8 @@ body[data-theme="ember"] {
   --session-text: #2a1420;
   --status-bg: rgba(0,0,0,0.08);
   --status-text: #2a1420;
-  --timestamp-text: #a07082;
-  --placeholder-text: #c08aa0;
+  --timestamp-text: #b87a90;
+  --placeholder-text: #d08aa0;
   --btn-gradient-start: #e86f8d;
   --btn-gradient-end: #c45474;
 }
@@ -124,20 +124,52 @@ header {
 }
 
 .header-title { display: flex; flex-direction: column; align-items: center; flex: 1; }
+
+/* LUCIDA CALLIGRAPHY TITLE - BOLD & ELEGANT */
 .mumbi-name {
-  font-family: 'Cinzel Decorative', cursive;
-  font-size: 1rem;
-  font-weight: 900;
-  letter-spacing: 3px;
-  background: linear-gradient(135deg, var(--gold-dark), var(--glimmer));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font-family: 'Lucida Calligraphy', 'Segoe Script', 'Brush Script MT', cursive;
+  font-size: 1.6rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+  color: var(--gold-dark);
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
   position: relative;
+  display: inline-block;
+  background: none;
+  -webkit-text-fill-color: var(--gold-dark);
 }
-.mumbi-name::before { content: "⚲"; position: absolute; left: -20px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: var(--glimmer); opacity: 0.8; }
-.mumbi-name::after { content: "⚲"; position: absolute; right: -20px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: var(--glimmer); opacity: 0.8; }
-.header-subtitle { font-size: 0.55rem; opacity: 0.8; margin-top: 2px; letter-spacing: 1px; color: var(--text-dark); }
+.mumbi-name::before {
+  content: "⚲";
+  position: absolute;
+  left: -32px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: var(--glimmer);
+  opacity: 0.9;
+  font-family: monospace;
+}
+.mumbi-name::after {
+  content: "⚲";
+  position: absolute;
+  right: -32px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: var(--glimmer);
+  opacity: 0.9;
+  font-family: monospace;
+}
+
+.header-subtitle {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  margin-top: 4px;
+  color: var(--glimmer);
+  text-transform: uppercase;
+  font-family: 'Segoe UI', monospace;
+}
 
 /* Header buttons */
 #menu-toggle, .header-right button {
@@ -385,6 +417,10 @@ textarea::placeholder { color: var(--placeholder-text); }
 
 @media (min-width: 768px) {
   .app-container { max-width: 700px; height: 90dvh; margin: 20px auto; border-radius: 32px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.2); }
+  .mumbi-name { font-size: 2rem; letter-spacing: 3px; }
+  .mumbi-name::before { left: -40px; font-size: 1.3rem; }
+  .mumbi-name::after { right: -40px; font-size: 1.3rem; }
+  .header-subtitle { font-size: 0.7rem; letter-spacing: 4px; }
 }
 </style>
 </head>
@@ -425,7 +461,7 @@ textarea::placeholder { color: var(--placeholder-text); }
       <button id="send-btn">⟶</button>
     </div>
   </div>
-  <div class="status-bar" id="status-bar">✨ Mumbi · Ready</div>
+  <div class="status-bar" id="status-bar">✨ Mumbi · Lucida Calligraphy · Ready</div>
 </div>
 
 <script>
