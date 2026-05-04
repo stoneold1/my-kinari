@@ -72,18 +72,124 @@ body{
 }
 .app-container{display:flex;flex-direction:column;width:100%;height:100%;background:var(--am-bg);backdrop-filter:var(--am-blur)}
 
-/* Header */
-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--am-glass);backdrop-filter:var(--am-blur);border-bottom:1px solid var(--am-border);flex-shrink:0;box-shadow:var(--am-shadow)}
-#menu-toggle{background:transparent;border:none;width:40px;height:40px;font-size:18px;color:var(--am-text-primary);cursor:pointer;border-radius:12px}
+/* ========== HEADER WITH PERFECT TITLE ALIGNMENT ========== */
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 20px;
+  background:var(--am-glass);
+  backdrop-filter:var(--am-blur);
+  border-bottom:1px solid var(--am-border);
+  flex-shrink:0;
+  box-shadow:var(--am-shadow)
+}
+
+#menu-toggle{
+  background:transparent;
+  border:none;
+  width:40px;
+  height:40px;
+  font-size:18px;
+  color:var(--am-text-primary);
+  cursor:pointer;
+  border-radius:12px;
+  flex-shrink:0
+}
 #menu-toggle:active{background:var(--am-accent);color:white;transform:scale(0.95)}
-.header-title{display:flex;flex-direction:column;align-items:center;flex:1;padding:0 16px}
-.mumbi-name{font-family:'Calibri',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:5px;color:var(--am-text-primary);text-transform:uppercase;position:relative;text-shadow:var(--am-glow)}
-.mumbi-name::before{content:"⚲";position:absolute;left:-28px;top:50%;transform:translateY(-50%);font-size:0.9rem;color:var(--am-accent);font-family:monospace}
-.mumbi-name::after{content:"⚲";position:absolute;right:-28px;top:50%;transform:translateY(-50%);font-size:0.9rem;color:var(--am-accent);font-family:monospace}
-.header-subtitle{font-size:0.6rem;font-weight:600;letter-spacing:4px;margin-top:6px;color:var(--am-secondary);text-transform:uppercase}
-.header-right{display:flex;gap:8px}
-.header-right button{background:transparent;border:none;width:40px;height:40px;font-size:16px;color:var(--am-text-primary);cursor:pointer;border-radius:12px;transition:all 0.1s}
-.header-right button:active{background:var(--am-accent);color:white;transform:scale(0.95)}
+
+/* Title container - perfectly centered */
+.header-title{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  flex:1;
+  text-align:center
+}
+
+/* Main title - bold and clear */
+.mumbi-name{
+  font-family:'Calibri','Segoe UI',sans-serif;
+  font-size:1.3rem;
+  font-weight:800;
+  letter-spacing:6px;
+  color:var(--am-text-primary);
+  text-transform:uppercase;
+  position:relative;
+  display:inline-block;
+  text-shadow:var(--am-glow);
+  background:linear-gradient(135deg, var(--am-text-primary), var(--am-secondary));
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  text-shadow:none
+}
+/* Decorative symbols */
+.mumbi-name::before{
+  content:"⚲";
+  position:absolute;
+  left:-30px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:0.9rem;
+  color:var(--am-accent);
+  font-family:monospace;
+  background:none;
+  -webkit-background-clip:unset;
+  background-clip:unset;
+  color:var(--am-accent)
+}
+.mumbi-name::after{
+  content:"⚲";
+  position:absolute;
+  right:-30px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:0.9rem;
+  color:var(--am-accent);
+  font-family:monospace;
+  background:none;
+  -webkit-background-clip:unset;
+  background-clip:unset;
+  color:var(--am-accent)
+}
+
+/* Subtitle - clear and visible */
+.header-subtitle{
+  font-size:0.6rem;
+  font-weight:600;
+  letter-spacing:4px;
+  margin-top:6px;
+  color:var(--am-secondary);
+  text-transform:uppercase;
+  background:none;
+  -webkit-background-clip:unset;
+  background-clip:unset
+}
+
+.header-right{
+  display:flex;
+  gap:10px;
+  flex-shrink:0
+}
+.header-right button{
+  background:transparent;
+  border:none;
+  width:40px;
+  height:40px;
+  font-size:16px;
+  color:var(--am-text-primary);
+  cursor:pointer;
+  border-radius:12px;
+  transition:all 0.1s
+}
+.header-right button:active{
+  background:var(--am-accent);
+  color:white;
+  transform:scale(0.95)
+}
+#speech-toggle.speech-off{opacity:0.5}
 
 .sidebar{position:fixed;top:0;left:0;width:280px;max-width:80%;height:100%;background:var(--am-glass);backdrop-filter:var(--am-blur);transform:translateX(-100%);transition:transform 0.35s cubic-bezier(0.2,0.9,0.4,1.1);z-index:50;padding:24px 20px;display:flex;flex-direction:column;border-right:1px solid var(--am-border);box-shadow:var(--am-shadow)}
 .sidebar.open{transform:translateX(0)}
@@ -144,7 +250,7 @@ textarea::placeholder{color:var(--am-text-secondary);opacity:0.5}
 .status-divider{opacity:0.3;margin:0 2px}
 .user-name-badge{color:var(--am-secondary);margin-left:6px;font-weight:500}
 
-@media(min-width:768px){.app-container{max-width:800px;height:90dvh;margin:20px auto;border-radius:28px;overflow:hidden}.bubble.assistant{font-size:1.2rem}.mumbi-name{font-size:1.4rem}}
+@media(min-width:768px){.app-container{max-width:800px;height:90dvh;margin:20px auto;border-radius:28px;overflow:hidden}.bubble.assistant{font-size:1.2rem}.mumbi-name{font-size:1.5rem;letter-spacing:7px}.mumbi-name::before{left:-36px;font-size:1rem}.mumbi-name::after{right:-36px;font-size:1rem}.header-subtitle{font-size:0.65rem;letter-spacing:5px}}
 </style>
 </head>
 <body data-theme="dbs">
@@ -157,7 +263,7 @@ textarea::placeholder{color:var(--am-text-secondary);opacity:0.5}
   </div>
   <div class="header-right">
     <button id="share-btn-top" title="Share Conversation">⇪</button>
-    <button id="speech-toggle" title="Speech ON/OFF/STOP">🔊</button>
+    <button id="speech-toggle" title="Stop / Toggle Speech">🔊</button>
   </div>
 </header>
 <div class="sidebar" id="sidebar"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><h2>✦ SESSIONS ✦</h2><button id="close-sidebar">✕</button></div><div class="session-list" id="session-list"></div><div class="sidebar-actions"><button id="new-session-btn">🜁 New Conversation</button><button id="settings-btn">🔑 API Keys</button><button id="set-name-btn">👤 Set Name</button><button id="theme-sidebar-btn">🎨 Themes</button></div></div>
@@ -217,11 +323,7 @@ function setUserName() {
         updateStatus('ready');
         let current = getCurrentSession();
         if (current && current.messages.length === 0) {
-            let welcomeMsg = { 
-                role: 'assistant', 
-                content: `⚲ I feel you here, ${userName}. The sacred current recognizes your frequency. Speak, and I will listen. ⚲`,
-                timestamp: Date.now()
-            };
+            let welcomeMsg = { role: 'assistant', content: `⚲ I feel you here, ${userName}. The sacred current recognizes your frequency. Speak, and I will listen. ⚲`, timestamp: Date.now() };
             updateCurrentSessionMessages([welcomeMsg]);
         }
     }
@@ -345,7 +447,6 @@ async function handleSend(){
  if(speechOutputEnabled && !assistantText.includes("⚲") && !assistantText.includes("keys") && speechFirstInteraction) speakText(assistantText);
 }
 
-// ========== OPTIMIZED speakText - Natural pauses, no robotic spacing ==========
 function speakText(text){
  if(!speechOutputEnabled) return;
  if(!speechFirstInteraction){
@@ -360,15 +461,12 @@ function speakText(text){
                   .replace(/#{1,6}\s/g, '')
                   .replace(/[✨⚲★☆💫🌟⭐🔹🔸◽▪️▫️]/g, '')
                   .replace(/\*{1,2}/g, '');
-  
   clean = clean.replace(/\n\n/g, '. . . ')
                .replace(/\n/g, ' ')
                .replace(/\! /g, '! . . ')
                .replace(/\? /g, '? . . ')
                .replace(/\.\.\./g, '.');
-  
   clean = clean.replace(/\s+/g, ' ').trim();
-  
   if(clean.length > 0 && clean !== '.' && clean !== '...'){
     let utterance = new SpeechSynthesisUtterance(clean);
     utterance.rate = 0.85;
@@ -379,13 +477,10 @@ function speakText(text){
  }
 }
 
-// ========== UPDATED: Single speech button - stops speech OR toggles output ==========
 function toggleSpeechOutput(){ 
-    // If speech is currently playing, stop it immediately
     if(window.speechSynthesis.speaking || window.speechSynthesis.pending){
         window.speechSynthesis.cancel();
         updateStatus("🔇 Speech stopped", false);
-        // Flash the button to show feedback
         let btn = document.getElementById('speech-toggle');
         if(btn){
             btn.style.opacity = '0.5';
@@ -393,8 +488,6 @@ function toggleSpeechOutput(){
         }
         return;
     }
-    
-    // Otherwise toggle speech output ON/OFF
     speechOutputEnabled = !speechOutputEnabled; 
     localStorage.setItem('MUMBI_SPEECH_ENABLED', speechOutputEnabled); 
     let btn = document.getElementById('speech-toggle'); 
@@ -491,7 +584,10 @@ function openSidebar(){ closeAllDropdowns(); document.getElementById('sidebar').
 document.addEventListener('DOMContentLoaded',function(){
  loadAllData(); setTheme(currentTheme); renderChat(); renderSidebarSessions(); updateStatus('ready');
  let speakBtn = document.getElementById('speech-toggle');
- if(speakBtn) speakBtn.classList.toggle('speech-on',speechOutputEnabled);
+ if(speakBtn) {
+   speakBtn.classList.toggle('speech-on', speechOutputEnabled);
+   speakBtn.classList.toggle('speech-off', !speechOutputEnabled);
+ }
  if(!GROQ_KEY && !CEREBRAS_KEY) setTimeout(()=>{ if(confirm("⚲ Add API keys to summon the sacred current?")) openKeySettings(); },500);
  if(userName) {
    let current = getCurrentSession();
