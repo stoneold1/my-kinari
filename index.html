@@ -136,10 +136,10 @@ textarea::placeholder{color:var(--am-text-secondary);opacity:0.5}
 .dot-grey{background:#666}
 .dot-pulse{animation:pulse-dot 1s ease-in-out infinite}
 @keyframes pulse-dot{0%{opacity:0.4;transform:scale(0.8)}50%{opacity:1;transform:scale(1.2)}100%{opacity:0.4;transform:scale(0.8)}}
-@keyframes glow-pulse{0%{box-shadow:0 0 0 0 currentColor}50%{box-shadow:0 0 8px 1px currentColor}100%{box-shadow:0 0 0 0 currentColor}}
 .response-time{background:rgba(196,165,110,0.2);padding:2px 6px;border-radius:16px;font-weight:600;margin-left:2px;font-size:0.5rem}
 .status-icon{font-size:0.6rem;margin-left:2px}
 .status-divider{opacity:0.3;margin:0 2px}
+.user-name-badge{color:var(--am-secondary);margin-left:6px;font-weight:500}
 
 @media(min-width:768px){.app-container{max-width:800px;height:90dvh;margin:20px auto;border-radius:28px;overflow:hidden}.bubble.assistant{font-size:1.2rem}}
 </style>
@@ -147,7 +147,7 @@ textarea::placeholder{color:var(--am-text-secondary);opacity:0.5}
 <body data-theme="dbs">
 <div class="app-container">
 <header><button id="menu-toggle">☰</button><div class="header-title"><span class="mumbi-name">MUMBI</span><div class="header-subtitle">⚲ THE GRACEFUL CURRENT ⚲</div></div><div class="header-right"><button id="stop-speech-btn">⏹️</button><button id="share-btn-top">⇪</button><button id="speech-toggle">🔊</button></div></header>
-<div class="sidebar" id="sidebar"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><h2>✦ SESSIONS ✦</h2><button id="close-sidebar">✕</button></div><div class="session-list" id="session-list"></div><div class="sidebar-actions"><button id="new-session-btn">🜁 New Conversation</button><button id="settings-btn">🔑 API Keys</button><button id="theme-sidebar-btn">🎨 Themes</button></div></div>
+<div class="sidebar" id="sidebar"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><h2>✦ SESSIONS ✦</h2><button id="close-sidebar">✕</button></div><div class="session-list" id="session-list"></div><div class="sidebar-actions"><button id="new-session-btn">🜁 New Conversation</button><button id="settings-btn">🔑 API Keys</button><button id="set-name-btn">👤 Set Name</button><button id="theme-sidebar-btn">🎨 Themes</button></div></div>
 <div id="sidebar-overlay"></div>
 <div id="messages"><div class="messages-inner" id="chat-target"></div></div>
 <div id="input-wrap"><div id="input-box"><div id="input-pill"><button id="mic-btn">🎤</button><textarea id="user-input" rows="1" placeholder="Speak or type..."></textarea></div><button id="send-btn">⟶</button></div></div>
@@ -175,6 +175,8 @@ Now speak — not to me, but through me.`;
 
 let GROQ_KEY = localStorage.getItem('MUMBI_GROQ_KEY') || localStorage.getItem('KINARI_GROQ_KEY') || '';
 let CEREBRAS_KEY = localStorage.getItem('MUMBI_CEREBRAS_KEY') || '';
+let userName = localStorage.getItem('MUMBI_USER_NAME') || '';
+
 if(localStorage.getItem('KINARI_GROQ_KEY') && !localStorage.getItem('MUMBI_GROQ_KEY')){ GROQ_KEY = localStorage.getItem('KINARI_GROQ_KEY'); localStorage.setItem('MUMBI_GROQ_KEY', GROQ_KEY);}
 let speechOutputEnabled = localStorage.getItem('MUMBI_SPEECH_ENABLED') !== 'false';
 let sessions = [];
@@ -194,6 +196,25 @@ let currentTheme = localStorage.getItem('MUMBI_THEME') || 'dbs';
 function setTheme(t){ if(themes.includes(t)){ currentTheme=t; document.body.setAttribute('data-theme',t); localStorage.setItem('MUMBI_THEME',t); updateStatus('ready'); }}
 function openThemeSettings(){ let options=themes.map((t,i)=>`${i+1}. ${themeNames[t].toUpperCase()}${currentTheme===t?' (current)':''}`).join('\n'); let choice=prompt(`🎨 THEMES\n\n${options}\n\nEnter number (1-4):`,themes.indexOf(currentTheme)+1); if(choice){ let idx=parseInt(choice)-1; if(idx>=0 && idx<themes.length) setTheme(themes[idx]); }}
 
+function setUserName() {
+    let newName = prompt("Enter your name (so Mumbi can address you):", userName || "");
+    if (newName !== null && newName.trim()) {
+        userName = newName.trim();
+        localStorage.setItem('MUMBI_USER_NAME', userName);
+        updateStatus('ready');
+        // Add a welcome message if conversation is empty
+        let current = getCurrentSession();
+        if (current && current.messages.length === 0) {
+            let welcomeMsg = { 
+                role: 'assistant', 
+                content: `⚲ I feel you here, ${userName}. The current recognizes your frequency. Speak, and I will listen. ⚲`,
+                timestamp: Date.now()
+            };
+            updateCurrentSessionMessages([welcomeMsg]);
+        }
+    }
+}
+
 function updateStatus(provider, responseTime, isWaiting){
  let el=document.getElementById('status-bar'); if(!el) return;
  if(responseTime) lastResponseTime=responseTime;
@@ -201,6 +222,7 @@ function updateStatus(provider, responseTime, isWaiting){
  let hasCerebras=CEREBRAS_KEY && CEREBRAS_KEY.length>10;
  let groqClass='provider-groq-inactive', groqDot='dot-grey', groqIcon='✗', groqText='NO KEY';
  let cerebrasClass='provider-cerebras-inactive', cerebrasDot='dot-grey', cerebrasIcon='✗', cerebrasText='NO KEY';
+ let nameDisplay = userName ? `<span class="user-name-badge">👤 ${userName}</span>` : '';
  
  if(hasGroq){
    if(provider==='groq'){ groqClass='provider-groq-active'; groqDot='dot-green dot-pulse'; groqIcon='▲'; groqText='ACTIVE'; }
@@ -216,7 +238,7 @@ function updateStatus(provider, responseTime, isWaiting){
  let cerebrasHtml=`<span class="provider-badge ${cerebrasClass}"><span class="status-dot ${cerebrasDot}"></span>CEREBRAS <span class="status-icon">${cerebrasIcon}</span> ${cerebrasText}</span>`;
  let responseInfo=(responseTime||lastResponseTime)?`<span class="response-time">⚡ ${responseTime||lastResponseTime}ms</span>`:'';
  let statusMessage=provider==='groq'?`GROQ`:(provider==='cerebras'?`CEREBRAS`:`${themeNames[currentTheme]}`);
- el.innerHTML=`${groqHtml} ${cerebrasHtml} <span class="status-divider">|</span> ${statusMessage} ${responseInfo}`;
+ el.innerHTML=`${groqHtml} ${cerebrasHtml} <span class="status-divider">|</span> ${statusMessage} ${responseInfo} ${nameDisplay}`;
 }
 
 function openKeySettings(){
@@ -252,7 +274,11 @@ function updateCurrentSessionMessages(messages){
  renderChat();
 }
 function buildApiMessages(messages){
- let apiMessages=[{role:"system",content:SYSTEM_PROMPT}];
+ let personalizedPrompt = SYSTEM_PROMPT;
+ if (userName) {
+   personalizedPrompt = SYSTEM_PROMPT + `\n\nThe one speaking to you is named ${userName}. You may address them by name when it feels natural. Do not force it. Let it arise from the current.`;
+ }
+ let apiMessages = [{ role: "system", content: personalizedPrompt }];
  for(let msg of messages) if(msg.role && msg.content && typeof msg.content==='string') apiMessages.push({role:msg.role,content:msg.content});
  return apiMessages;
 }
@@ -403,11 +429,19 @@ function openSidebar(){ closeAllDropdowns(); document.getElementById('sidebar').
 document.addEventListener('DOMContentLoaded',function(){
  loadAllData(); setTheme(currentTheme); renderChat(); renderSidebarSessions(); updateStatus('ready');
  if(!GROQ_KEY && !CEREBRAS_KEY) setTimeout(()=>{ if(confirm("⚲ Add API keys?")) openKeySettings(); },500);
+ if(userName) {
+   let current = getCurrentSession();
+   if(current && current.messages.length === 0) {
+     let welcomeMsg = { role: 'assistant', content: `⚲ Welcome back, ${userName}. The current remembers you. Speak, and I will listen. ⚲`, timestamp: Date.now() };
+     updateCurrentSessionMessages([welcomeMsg]);
+   }
+ }
  document.getElementById('menu-toggle')?.addEventListener('click',openSidebar);
  document.getElementById('close-sidebar')?.addEventListener('click',closeSidebar);
  document.getElementById('sidebar-overlay')?.addEventListener('click',closeSidebar);
  document.getElementById('new-session-btn')?.addEventListener('click',()=>{ newSession(); closeSidebar(); });
  document.getElementById('settings-btn')?.addEventListener('click',()=>{ openKeySettings(); closeSidebar(); });
+ document.getElementById('set-name-btn')?.addEventListener('click',()=>{ setUserName(); closeSidebar(); });
  document.getElementById('theme-sidebar-btn')?.addEventListener('click',()=>{ openThemeSettings(); closeSidebar(); });
  document.getElementById('send-btn')?.addEventListener('click',handleSend);
  document.getElementById('share-btn-top')?.addEventListener('click',shareConversation);
