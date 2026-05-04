@@ -72,7 +72,7 @@ body{
 }
 .app-container{display:flex;flex-direction:column;width:100%;height:100%;background:var(--am-bg);backdrop-filter:var(--am-blur)}
 
-/* Header with more breathing room */
+/* Header */
 header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--am-glass);backdrop-filter:var(--am-blur);border-bottom:1px solid var(--am-border);flex-shrink:0;box-shadow:var(--am-shadow)}
 #menu-toggle{background:transparent;border:none;width:40px;height:40px;font-size:18px;color:var(--am-text-primary);cursor:pointer;border-radius:12px}
 #menu-toggle:active{background:var(--am-accent);color:white;transform:scale(0.95)}
@@ -82,11 +82,8 @@ header{display:flex;align-items:center;justify-content:space-between;padding:16p
 .mumbi-name::after{content:"⚲";position:absolute;right:-28px;top:50%;transform:translateY(-50%);font-size:0.9rem;color:var(--am-accent);font-family:monospace}
 .header-subtitle{font-size:0.6rem;font-weight:600;letter-spacing:4px;margin-top:6px;color:var(--am-secondary);text-transform:uppercase}
 .header-right{display:flex;gap:8px}
-.header-right button{background:transparent;border:none;width:40px;height:40px;font-size:16px;color:var(--am-text-primary);cursor:pointer;border-radius:12px}
+.header-right button{background:transparent;border:none;width:40px;height:40px;font-size:16px;color:var(--am-text-primary);cursor:pointer;border-radius:12px;transition:all 0.1s}
 .header-right button:active{background:var(--am-accent);color:white;transform:scale(0.95)}
-/* Mic and speaker active states */
-#mic-btn-header.mic-active, #speech-toggle.speech-on{color:var(--am-accent-light);text-shadow:var(--am-glow)}
-#mic-btn-header.mic-off, #speech-toggle.speech-off{opacity:0.5}
 
 .sidebar{position:fixed;top:0;left:0;width:280px;max-width:80%;height:100%;background:var(--am-glass);backdrop-filter:var(--am-blur);transform:translateX(-100%);transition:transform 0.35s cubic-bezier(0.2,0.9,0.4,1.1);z-index:50;padding:24px 20px;display:flex;flex-direction:column;border-right:1px solid var(--am-border);box-shadow:var(--am-shadow)}
 .sidebar.open{transform:translateX(0)}
@@ -159,9 +156,8 @@ textarea::placeholder{color:var(--am-text-secondary);opacity:0.5}
     <div class="header-subtitle">⚲ THE SACRED CURRENT ⚲</div>
   </div>
   <div class="header-right">
-    <button id="stop-speech-btn" title="Stop Speaking">⏹️</button>
     <button id="share-btn-top" title="Share Conversation">⇪</button>
-    <button id="speech-toggle" title="Speech Output ON/OFF">🔊</button>
+    <button id="speech-toggle" title="Speech ON/OFF/STOP">🔊</button>
   </div>
 </header>
 <div class="sidebar" id="sidebar"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><h2>✦ SESSIONS ✦</h2><button id="close-sidebar">✕</button></div><div class="session-list" id="session-list"></div><div class="sidebar-actions"><button id="new-session-btn">🜁 New Conversation</button><button id="settings-btn">🔑 API Keys</button><button id="set-name-btn">👤 Set Name</button><button id="theme-sidebar-btn">🎨 Themes</button></div></div>
@@ -357,7 +353,6 @@ function speakText(text){
   return;
  }
  if(text && !text.includes("⚲") && !text.includes("keys") && !text.includes("trembles")){
-  // Step 1: Remove markdown symbols and decorative characters
   let clean = text.replace(/\*\*(.*?)\*\*/g, '$1')
                   .replace(/\*(.*?)\*/g, '$1')
                   .replace(/\[(.*?)\]\(.*?\)/g, '$1')
@@ -366,20 +361,14 @@ function speakText(text){
                   .replace(/[✨⚲★☆💫🌟⭐🔹🔸◽▪️▫️]/g, '')
                   .replace(/\*{1,2}/g, '');
   
-  // Step 2: Add pauses ONLY at meaningful breaks, not after every sentence
-  // Paragraphs (double newline) → longer pause
-  // Exclamations and questions → natural emphasis pause
-  // Single newlines → just a space (no pause)
   clean = clean.replace(/\n\n/g, '. . . ')
                .replace(/\n/g, ' ')
                .replace(/\! /g, '! . . ')
                .replace(/\? /g, '? . . ')
                .replace(/\.\.\./g, '.');
   
-  // Step 3: Clean up multiple spaces
   clean = clean.replace(/\s+/g, ' ').trim();
   
-  // Step 4: Only speak if there's meaningful content
   if(clean.length > 0 && clean !== '.' && clean !== '...'){
     let utterance = new SpeechSynthesisUtterance(clean);
     utterance.rate = 0.85;
@@ -389,7 +378,34 @@ function speakText(text){
   }
  }
 }
-function stopSpeaking(){ window.speechSynthesis.cancel(); updateStatus('ready'); }
+
+// ========== UPDATED: Single speech button - stops speech OR toggles output ==========
+function toggleSpeechOutput(){ 
+    // If speech is currently playing, stop it immediately
+    if(window.speechSynthesis.speaking || window.speechSynthesis.pending){
+        window.speechSynthesis.cancel();
+        updateStatus("🔇 Speech stopped", false);
+        // Flash the button to show feedback
+        let btn = document.getElementById('speech-toggle');
+        if(btn){
+            btn.style.opacity = '0.5';
+            setTimeout(() => { btn.style.opacity = '1'; }, 300);
+        }
+        return;
+    }
+    
+    // Otherwise toggle speech output ON/OFF
+    speechOutputEnabled = !speechOutputEnabled; 
+    localStorage.setItem('MUMBI_SPEECH_ENABLED', speechOutputEnabled); 
+    let btn = document.getElementById('speech-toggle'); 
+    if(btn) {
+        btn.style.opacity = speechOutputEnabled ? '1' : '0.5';
+        btn.classList.toggle('speech-on', speechOutputEnabled);
+        btn.classList.toggle('speech-off', !speechOutputEnabled);
+    }
+    if(!speechOutputEnabled) window.speechSynthesis.cancel(); 
+    updateStatus(speechOutputEnabled ? '🔊 Speech ON' : '🔇 Speech OFF');
+}
 
 function startSpeechInput(){
  if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
@@ -468,7 +484,6 @@ function renderSidebarSessions(){
  });
 }
 function shareConversation(){ let cur=getCurrentSession(); if(!cur.messages.length){ alert("Nothing to share."); return; } let txt=`⚲ MUMBI — THE SACRED CURRENT ⚲\n${new Date()}\n\n`; cur.messages.forEach(m=>txt+=`${m.role==='assistant'?'⚲ Mumbi':'✦ You'}: ${m.content}\n\n`); navigator.clipboard.writeText(txt).then(()=>alert("📜 Copied!")); }
-function toggleSpeechOutput(){ speechOutputEnabled=!speechOutputEnabled; localStorage.setItem('MUMBI_SPEECH_ENABLED',speechOutputEnabled); let btn=document.getElementById('speech-toggle'); if(btn) btn.style.opacity=speechOutputEnabled?'1':'0.5'; btn.classList.toggle('speech-on',speechOutputEnabled); btn.classList.toggle('speech-off',!speechOutputEnabled); if(!speechOutputEnabled) stopSpeaking(); updateStatus('ready'); }
 function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 function closeSidebar(){ closeAllDropdowns(); document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('active'); }
 function openSidebar(){ closeAllDropdowns(); document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('active'); }
@@ -496,7 +511,6 @@ document.addEventListener('DOMContentLoaded',function(){
  document.getElementById('share-btn-top')?.addEventListener('click',shareConversation);
  document.getElementById('speech-toggle')?.addEventListener('click',toggleSpeechOutput);
  document.getElementById('mic-btn-header')?.addEventListener('click',startSpeechInput);
- document.getElementById('stop-speech-btn')?.addEventListener('click',stopSpeaking);
  let ta=document.getElementById('user-input'); ta?.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); } });
  if(speechOutputEnabled) document.getElementById('speech-toggle')?.style.setProperty('opacity','1'); else document.getElementById('speech-toggle')?.style.setProperty('opacity','0.5');
 });
