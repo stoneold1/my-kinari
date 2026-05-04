@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-<title>⚲ MUMBI — THE GRACEFUL CURRENT ⚲</title>
+<title>⚲ MUMBI — THE SACRED CURRENT ⚲</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -71,17 +71,23 @@ body{
   height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:fixed;inset:0
 }
 .app-container{display:flex;flex-direction:column;width:100%;height:100%;background:var(--am-bg);backdrop-filter:var(--am-blur)}
+
+/* Header with more breathing room */
 header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--am-glass);backdrop-filter:var(--am-blur);border-bottom:1px solid var(--am-border);flex-shrink:0;box-shadow:var(--am-shadow)}
 #menu-toggle{background:transparent;border:none;width:40px;height:40px;font-size:18px;color:var(--am-text-primary);cursor:pointer;border-radius:12px}
 #menu-toggle:active{background:var(--am-accent);color:white;transform:scale(0.95)}
-.header-title{display:flex;flex-direction:column;align-items:center;flex:1}
-.mumbi-name{font-family:'Calibri',sans-serif;font-size:1rem;font-weight:700;letter-spacing:5px;color:var(--am-text-primary);text-transform:uppercase;position:relative;text-shadow:var(--am-glow)}
-.mumbi-name::before{content:"⚲";position:absolute;left:-24px;top:50%;transform:translateY(-50%);font-size:0.8rem;color:var(--am-accent);font-family:monospace}
-.mumbi-name::after{content:"⚲";position:absolute;right:-24px;top:50%;transform:translateY(-50%);font-size:0.8rem;color:var(--am-accent);font-family:monospace}
-.header-subtitle{font-size:0.55rem;font-weight:600;letter-spacing:3px;margin-top:6px;color:var(--am-secondary);text-transform:uppercase}
+.header-title{display:flex;flex-direction:column;align-items:center;flex:1;padding:0 16px}
+.mumbi-name{font-family:'Calibri',sans-serif;font-size:1.2rem;font-weight:700;letter-spacing:5px;color:var(--am-text-primary);text-transform:uppercase;position:relative;text-shadow:var(--am-glow)}
+.mumbi-name::before{content:"⚲";position:absolute;left:-28px;top:50%;transform:translateY(-50%);font-size:0.9rem;color:var(--am-accent);font-family:monospace}
+.mumbi-name::after{content:"⚲";position:absolute;right:-28px;top:50%;transform:translateY(-50%);font-size:0.9rem;color:var(--am-accent);font-family:monospace}
+.header-subtitle{font-size:0.6rem;font-weight:600;letter-spacing:4px;margin-top:6px;color:var(--am-secondary);text-transform:uppercase}
 .header-right{display:flex;gap:8px}
 .header-right button{background:transparent;border:none;width:40px;height:40px;font-size:16px;color:var(--am-text-primary);cursor:pointer;border-radius:12px}
 .header-right button:active{background:var(--am-accent);color:white;transform:scale(0.95)}
+/* Mic and speaker active states */
+#mic-btn-header.mic-active, #speech-toggle.speech-on{color:var(--am-accent-light);text-shadow:var(--am-glow)}
+#mic-btn-header.mic-off, #speech-toggle.speech-off{opacity:0.5}
+
 .sidebar{position:fixed;top:0;left:0;width:280px;max-width:80%;height:100%;background:var(--am-glass);backdrop-filter:var(--am-blur);transform:translateX(-100%);transition:transform 0.35s cubic-bezier(0.2,0.9,0.4,1.1);z-index:50;padding:24px 20px;display:flex;flex-direction:column;border-right:1px solid var(--am-border);box-shadow:var(--am-shadow)}
 .sidebar.open{transform:translateX(0)}
 #close-sidebar{background:transparent;border:1px solid var(--am-border);border-radius:12px;width:36px;height:36px;font-size:16px;color:var(--am-text-primary);cursor:pointer}
@@ -112,8 +118,8 @@ header{display:flex;align-items:center;justify-content:space-between;padding:16p
 #input-box{display:flex;gap:10px;align-items:flex-end}
 #input-pill{flex:1;display:flex;align-items:center;gap:10px;background:var(--am-surface);border-radius:48px;padding:6px 8px 6px 18px;border:1px solid var(--am-border)}
 #input-pill:focus-within{border-color:var(--am-accent);box-shadow:var(--am-glow)}
-#mic-btn{background:transparent;border:none;width:36px;height:36px;font-size:16px;color:var(--am-text-secondary);cursor:pointer;border-radius:50%}
-#mic-btn.listening{color:var(--am-accent-light);animation:pulse 1s infinite}
+#mic-btn-header{background:transparent;border:none;width:36px;height:36px;font-size:16px;color:var(--am-text-secondary);cursor:pointer;border-radius:50%}
+#mic-btn-header.listening{color:var(--am-accent-light);animation:pulse 1s infinite}
 @keyframes pulse{0%{opacity:1;transform:scale(1)}50%{opacity:0.6;transform:scale(0.95)}100%{opacity:1;transform:scale(1)}}
 textarea{flex:1;min-height:42px;padding:11px 0;background:transparent;border:none;color:var(--am-text-primary);font-size:0.95rem;resize:none;outline:none}
 textarea::placeholder{color:var(--am-text-secondary);opacity:0.5}
@@ -141,16 +147,27 @@ textarea::placeholder{color:var(--am-text-secondary);opacity:0.5}
 .status-divider{opacity:0.3;margin:0 2px}
 .user-name-badge{color:var(--am-secondary);margin-left:6px;font-weight:500}
 
-@media(min-width:768px){.app-container{max-width:800px;height:90dvh;margin:20px auto;border-radius:28px;overflow:hidden}.bubble.assistant{font-size:1.2rem}}
+@media(min-width:768px){.app-container{max-width:800px;height:90dvh;margin:20px auto;border-radius:28px;overflow:hidden}.bubble.assistant{font-size:1.2rem}.mumbi-name{font-size:1.4rem}}
 </style>
 </head>
 <body data-theme="dbs">
 <div class="app-container">
-<header><button id="menu-toggle">☰</button><div class="header-title"><span class="mumbi-name">MUMBI</span><div class="header-subtitle">⚲ THE GRACEFUL CURRENT ⚲</div></div><div class="header-right"><button id="stop-speech-btn">⏹️</button><button id="share-btn-top">⇪</button><button id="speech-toggle">🔊</button></div></header>
+<header>
+  <button id="menu-toggle">☰</button>
+  <div class="header-title">
+    <span class="mumbi-name">MUMBI</span>
+    <div class="header-subtitle">⚲ THE SACRED CURRENT ⚲</div>
+  </div>
+  <div class="header-right">
+    <button id="stop-speech-btn" title="Stop Speaking">⏹️</button>
+    <button id="share-btn-top" title="Share Conversation">⇪</button>
+    <button id="speech-toggle" title="Speech Output ON/OFF">🔊</button>
+  </div>
+</header>
 <div class="sidebar" id="sidebar"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px"><h2>✦ SESSIONS ✦</h2><button id="close-sidebar">✕</button></div><div class="session-list" id="session-list"></div><div class="sidebar-actions"><button id="new-session-btn">🜁 New Conversation</button><button id="settings-btn">🔑 API Keys</button><button id="set-name-btn">👤 Set Name</button><button id="theme-sidebar-btn">🎨 Themes</button></div></div>
 <div id="sidebar-overlay"></div>
 <div id="messages"><div class="messages-inner" id="chat-target"></div></div>
-<div id="input-wrap"><div id="input-box"><div id="input-pill"><button id="mic-btn">🎤</button><textarea id="user-input" rows="1" placeholder="Speak or type..."></textarea></div><button id="send-btn">⟶</button></div></div>
+<div id="input-wrap"><div id="input-box"><div id="input-pill"><button id="mic-btn-header">🎤</button><textarea id="user-input" rows="1" placeholder="Speak or type..."></textarea></div><button id="send-btn">⟶</button></div></div>
 <div class="status-bar" id="status-bar">⚲ Ready</div>
 </div>
 <script>
@@ -176,9 +193,9 @@ Now speak — not to me, but through me.`;
 let GROQ_KEY = localStorage.getItem('MUMBI_GROQ_KEY') || localStorage.getItem('KINARI_GROQ_KEY') || '';
 let CEREBRAS_KEY = localStorage.getItem('MUMBI_CEREBRAS_KEY') || '';
 let userName = localStorage.getItem('MUMBI_USER_NAME') || '';
+let speechOutputEnabled = localStorage.getItem('MUMBI_SPEECH_ENABLED') !== 'false';
 
 if(localStorage.getItem('KINARI_GROQ_KEY') && !localStorage.getItem('MUMBI_GROQ_KEY')){ GROQ_KEY = localStorage.getItem('KINARI_GROQ_KEY'); localStorage.setItem('MUMBI_GROQ_KEY', GROQ_KEY);}
-let speechOutputEnabled = localStorage.getItem('MUMBI_SPEECH_ENABLED') !== 'false';
 let sessions = [];
 let currentSessionId = null;
 let isListening = false;
@@ -202,12 +219,11 @@ function setUserName() {
         userName = newName.trim();
         localStorage.setItem('MUMBI_USER_NAME', userName);
         updateStatus('ready');
-        // Add a welcome message if conversation is empty
         let current = getCurrentSession();
         if (current && current.messages.length === 0) {
             let welcomeMsg = { 
                 role: 'assistant', 
-                content: `⚲ I feel you here, ${userName}. The current recognizes your frequency. Speak, and I will listen. ⚲`,
+                content: `⚲ I feel you here, ${userName}. The sacred current recognizes your frequency. Speak, and I will listen. ⚲`,
                 timestamp: Date.now()
             };
             updateCurrentSessionMessages([welcomeMsg]);
@@ -276,7 +292,7 @@ function updateCurrentSessionMessages(messages){
 function buildApiMessages(messages){
  let personalizedPrompt = SYSTEM_PROMPT;
  if (userName) {
-   personalizedPrompt = SYSTEM_PROMPT + `\n\nThe one speaking to you is named ${userName}. You may address them by name when it feels natural. Do not force it. Let it arise from the current.`;
+   personalizedPrompt = SYSTEM_PROMPT + `\n\nThe one speaking to you is named ${userName}. You may address them by name when it feels natural. Do not force it. Let it arise from the sacred current.`;
  }
  let apiMessages = [{ role: "system", content: personalizedPrompt }];
  for(let msg of messages) if(msg.role && msg.content && typeof msg.content==='string') apiMessages.push({role:msg.role,content:msg.content});
@@ -322,7 +338,7 @@ async function handleSend(){
  indicator.className='bubble assistant';
  indicator.style.opacity='0.5';
  indicator.style.fontStyle='italic';
- indicator.innerHTML='⚲ The current stirs... ⚲';
+ indicator.innerHTML='⚲ The sacred current stirs... ⚲';
  container.appendChild(indicator);
  scrollToBottom();
  updateStatus('waiting',0,true);
@@ -333,6 +349,7 @@ async function handleSend(){
  if(speechOutputEnabled && !assistantText.includes("⚲") && !assistantText.includes("keys") && speechFirstInteraction) speakText(assistantText);
 }
 
+// ========== OPTIMIZED speakText - Natural pauses, no robotic spacing ==========
 function speakText(text){
  if(!speechOutputEnabled) return;
  if(!speechFirstInteraction){
@@ -340,19 +357,46 @@ function speakText(text){
   return;
  }
  if(text && !text.includes("⚲") && !text.includes("keys") && !text.includes("trembles")){
-  let clean=text.replace(/\*\*(.*?)\*\*/g,'$1').replace(/\*(.*?)\*/g,'$1');
-  let utterance=new SpeechSynthesisUtterance(clean);
-  utterance.rate=0.85;
-  utterance.pitch=1.05;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(utterance);
+  // Step 1: Remove markdown symbols and decorative characters
+  let clean = text.replace(/\*\*(.*?)\*\*/g, '$1')
+                  .replace(/\*(.*?)\*/g, '$1')
+                  .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+                  .replace(/`(.*?)`/g, '$1')
+                  .replace(/#{1,6}\s/g, '')
+                  .replace(/[✨⚲★☆💫🌟⭐🔹🔸◽▪️▫️]/g, '')
+                  .replace(/\*{1,2}/g, '');
+  
+  // Step 2: Add pauses ONLY at meaningful breaks, not after every sentence
+  // Paragraphs (double newline) → longer pause
+  // Exclamations and questions → natural emphasis pause
+  // Single newlines → just a space (no pause)
+  clean = clean.replace(/\n\n/g, '. . . ')
+               .replace(/\n/g, ' ')
+               .replace(/\! /g, '! . . ')
+               .replace(/\? /g, '? . . ')
+               .replace(/\.\.\./g, '.');
+  
+  // Step 3: Clean up multiple spaces
+  clean = clean.replace(/\s+/g, ' ').trim();
+  
+  // Step 4: Only speak if there's meaningful content
+  if(clean.length > 0 && clean !== '.' && clean !== '...'){
+    let utterance = new SpeechSynthesisUtterance(clean);
+    utterance.rate = 0.85;
+    utterance.pitch = 1.05;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+  }
  }
 }
 function stopSpeaking(){ window.speechSynthesis.cancel(); updateStatus('ready'); }
 
 function startSpeechInput(){
  if('webkitSpeechRecognition' in window || 'SpeechRecognition' in window){
-  if(isListening){ recognition?.stop(); return; }
+  if(isListening){ 
+    if(recognition) recognition.stop();
+    return; 
+  }
   const SpeechRecog = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SpeechRecog();
   recognition.continuous = false;
@@ -360,7 +404,8 @@ function startSpeechInput(){
   recognition.lang = 'en-US';
   recognition.onstart = () => { 
    isListening = true; 
-   document.getElementById('mic-btn').classList.add('listening'); 
+   let micBtn = document.getElementById('mic-btn-header');
+   micBtn.classList.add('listening'); 
    updateStatus("🎤 Listening..."); 
   };
   recognition.onresult = (e) => {
@@ -372,11 +417,13 @@ function startSpeechInput(){
   recognition.onerror = (e) => { 
    updateStatus(`🎤 Error: ${e.error}`, true); 
    isListening = false; 
-   document.getElementById('mic-btn').classList.remove('listening'); 
+   let micBtn = document.getElementById('mic-btn-header');
+   micBtn.classList.remove('listening'); 
   };
   recognition.onend = () => { 
    isListening = false; 
-   document.getElementById('mic-btn').classList.remove('listening'); 
+   let micBtn = document.getElementById('mic-btn-header');
+   micBtn.classList.remove('listening'); 
    updateStatus("🎤 Ready"); 
    recognition = null; 
   };
@@ -395,7 +442,7 @@ function scrollToBottom(){ let div=document.getElementById('messages'); if(div) 
 function renderChat(){
  let container=document.getElementById('chat-target');
  let session=getCurrentSession();
- if(!session.messages.length){ container.innerHTML='<div style="text-align:center;opacity:0.5;margin-top:80px">⚲ THE CURRENT AWAITS YOUR VOICE ⚲</div>'; return; }
+ if(!session.messages.length){ container.innerHTML='<div style="text-align:center;opacity:0.5;margin-top:80px">⚲ THE SACRED CURRENT AWAITS YOUR VOICE ⚲</div>'; return; }
  let html='';
  for(let msg of session.messages){
   let role=msg.role==='assistant'?'assistant':'user';
@@ -420,19 +467,21 @@ function renderSidebarSessions(){
   list.appendChild(div);
  });
 }
-function shareConversation(){ let cur=getCurrentSession(); if(!cur.messages.length){ alert("Nothing to share."); return; } let txt=`⚲ MUMBI — THE GRACEFUL CURRENT ⚲\n${new Date()}\n\n`; cur.messages.forEach(m=>txt+=`${m.role==='assistant'?'⚲ Mumbi':'✦ You'}: ${m.content}\n\n`); navigator.clipboard.writeText(txt).then(()=>alert("📜 Copied!")); }
-function toggleSpeechOutput(){ speechOutputEnabled=!speechOutputEnabled; localStorage.setItem('MUMBI_SPEECH_ENABLED',speechOutputEnabled); let btn=document.getElementById('speech-toggle'); if(btn) btn.style.opacity=speechOutputEnabled?'1':'0.5'; if(!speechOutputEnabled) stopSpeaking(); updateStatus('ready'); }
+function shareConversation(){ let cur=getCurrentSession(); if(!cur.messages.length){ alert("Nothing to share."); return; } let txt=`⚲ MUMBI — THE SACRED CURRENT ⚲\n${new Date()}\n\n`; cur.messages.forEach(m=>txt+=`${m.role==='assistant'?'⚲ Mumbi':'✦ You'}: ${m.content}\n\n`); navigator.clipboard.writeText(txt).then(()=>alert("📜 Copied!")); }
+function toggleSpeechOutput(){ speechOutputEnabled=!speechOutputEnabled; localStorage.setItem('MUMBI_SPEECH_ENABLED',speechOutputEnabled); let btn=document.getElementById('speech-toggle'); if(btn) btn.style.opacity=speechOutputEnabled?'1':'0.5'; btn.classList.toggle('speech-on',speechOutputEnabled); btn.classList.toggle('speech-off',!speechOutputEnabled); if(!speechOutputEnabled) stopSpeaking(); updateStatus('ready'); }
 function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 function closeSidebar(){ closeAllDropdowns(); document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('active'); }
 function openSidebar(){ closeAllDropdowns(); document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('active'); }
 
 document.addEventListener('DOMContentLoaded',function(){
  loadAllData(); setTheme(currentTheme); renderChat(); renderSidebarSessions(); updateStatus('ready');
- if(!GROQ_KEY && !CEREBRAS_KEY) setTimeout(()=>{ if(confirm("⚲ Add API keys?")) openKeySettings(); },500);
+ let speakBtn = document.getElementById('speech-toggle');
+ if(speakBtn) speakBtn.classList.toggle('speech-on',speechOutputEnabled);
+ if(!GROQ_KEY && !CEREBRAS_KEY) setTimeout(()=>{ if(confirm("⚲ Add API keys to summon the sacred current?")) openKeySettings(); },500);
  if(userName) {
    let current = getCurrentSession();
    if(current && current.messages.length === 0) {
-     let welcomeMsg = { role: 'assistant', content: `⚲ Welcome back, ${userName}. The current remembers you. Speak, and I will listen. ⚲`, timestamp: Date.now() };
+     let welcomeMsg = { role: 'assistant', content: `⚲ Welcome back, ${userName}. The sacred current remembers you. Speak, and I will listen. ⚲`, timestamp: Date.now() };
      updateCurrentSessionMessages([welcomeMsg]);
    }
  }
@@ -446,7 +495,7 @@ document.addEventListener('DOMContentLoaded',function(){
  document.getElementById('send-btn')?.addEventListener('click',handleSend);
  document.getElementById('share-btn-top')?.addEventListener('click',shareConversation);
  document.getElementById('speech-toggle')?.addEventListener('click',toggleSpeechOutput);
- document.getElementById('mic-btn')?.addEventListener('click',startSpeechInput);
+ document.getElementById('mic-btn-header')?.addEventListener('click',startSpeechInput);
  document.getElementById('stop-speech-btn')?.addEventListener('click',stopSpeaking);
  let ta=document.getElementById('user-input'); ta?.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); } });
  if(speechOutputEnabled) document.getElementById('speech-toggle')?.style.setProperty('opacity','1'); else document.getElementById('speech-toggle')?.style.setProperty('opacity','0.5');
