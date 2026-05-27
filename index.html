@@ -1,220 +1,452 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-<title>⚲ KINARI — VOICE OF TRUTH ⚲</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{transition:all .3s cubic-bezier(0.2,0.9,0.4,1.1)}
-body[data-theme="pixel"]{--md-bg:linear-gradient(145deg,#0f0f12,#1a1a1f);--md-surface:rgba(25,25,30,.92);--md-primary:#0b57d0;--md-primary-light:#8ab4f8;--md-primary-dark:#0842a0;--md-secondary:#14b8a6;--md-secondary-dark:#0d8a7a;--md-accent:#f59e0b;--md-text-primary:#e3e3e3;--md-text-secondary:#9aa0a6;--md-glow:0 0 20px rgba(11,87,208,.25);--gradient-aurora:linear-gradient(135deg,#0b57d0,#14b8a6);--gradient-ocean:linear-gradient(135deg,#14b8a6,#0b57d0)}
-body[data-theme="galaxy"]{--md-bg:linear-gradient(145deg,#121212,#1e1e2a);--md-surface:rgba(30,30,42,.92);--md-primary:#6c63ff;--md-primary-light:#b3adff;--md-primary-dark:#4a42cc;--md-secondary:#ff6584;--md-secondary-dark:#cc4a6a;--md-accent:#ffb347;--md-text-primary:#f0f0f0;--md-text-secondary:#a0a0b0;--md-glow:0 0 20px rgba(108,99,255,.3);--gradient-aurora:linear-gradient(135deg,#6c63ff,#ff6584);--gradient-ocean:linear-gradient(135deg,#ff6584,#6c63ff)}
-body[data-theme="iphone"]{--md-bg:linear-gradient(145deg,#000,#1c1c1e);--md-surface:rgba(28,28,30,.92);--md-primary:#007aff;--md-primary-light:#5e9eff;--md-primary-dark:#0055b3;--md-secondary:#34c759;--md-secondary-dark:#228f3d;--md-accent:#ff9f0a;--md-text-primary:#fff;--md-text-secondary:#8e8e93;--md-glow:0 0 20px rgba(0,122,255,.25);--gradient-aurora:linear-gradient(135deg,#007aff,#34c759);--gradient-ocean:linear-gradient(135deg,#34c759,#007aff)}
-body[data-theme="nothing"]{--md-bg:#0f0f0f;--md-surface:rgba(20,20,20,.92);--md-primary:#fff;--md-primary-light:#ccc;--md-primary-dark:#aaa;--md-secondary:#888;--md-secondary-dark:#666;--md-accent:#ddd;--md-text-primary:#fff;--md-text-secondary:#999;--md-glow:0 0 15px rgba(255,255,255,.15);--gradient-aurora:linear-gradient(135deg,#fff,#aaa);--gradient-ocean:linear-gradient(135deg,#ccc,#fff)}
-body[data-theme="xiaomi"]{--md-bg:linear-gradient(145deg,#0a0a1a,#1a1a3a);--md-surface:rgba(26,26,58,.92);--md-primary:#ff6b4a;--md-primary-light:#ff9e85;--md-primary-dark:#cc4a2e;--md-secondary:#4a90e2;--md-secondary-dark:#2a60b0;--md-accent:#ffd93d;--md-text-primary:#fff;--md-text-secondary:#b0b0c0;--md-glow:0 0 20px rgba(255,107,74,.25);--gradient-aurora:linear-gradient(135deg,#ff6b4a,#4a90e2);--gradient-ocean:linear-gradient(135deg,#4a90e2,#ff6b4a)}
-body{background:var(--md-bg);font-family:'Inter','Segoe UI','Roboto',system-ui;height:100dvh;display:flex;flex-direction:column;overflow:hidden;position:fixed;inset:0;color:var(--md-text-primary)}
-body::before{content:'';position:fixed;top:-20%;left:-20%;width:140%;height:140%;background:radial-gradient(circle at 30% 40%,rgba(255,255,255,.05)0%,transparent 60%);pointer-events:none;z-index:0;animation:slowOrbit 20s ease-in-out infinite}
-@keyframes slowOrbit{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.02)}}
-.app-container{position:relative;z-index:1;display:flex;flex-direction:column;width:100%;height:100%;background:var(--md-surface);backdrop-filter:blur(24px)}
-header{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;background:rgba(0,0,0,.3);backdrop-filter:blur(32px);border-bottom:.5px solid rgba(255,255,255,.08);flex-shrink:0}
-#menu-toggle{background:rgba(255,255,255,.08);border:.5px solid rgba(255,255,255,.1);width:44px;height:44px;font-size:18px;color:var(--md-text-primary);cursor:pointer;border-radius:30px}
-#menu-toggle:active{background:var(--gradient-aurora);transform:scale(.95);box-shadow:var(--md-glow)}
-.header-right button{background:rgba(255,255,255,.08);border:.5px solid rgba(255,255,255,.1);width:44px;height:44px;font-size:16px;color:var(--md-text-primary);cursor:pointer;border-radius:30px}
-.header-right button:active{background:var(--gradient-ocean);transform:scale(.95);box-shadow:var(--md-glow)}
-.header-title{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center}
-.KINARI-name{font-size:1.4rem;font-weight:700;letter-spacing:8px;background:var(--gradient-aurora);-webkit-background-clip:text;background-clip:text;color:transparent;position:relative}
-.KINARI-name::before,.KINARI-name::after{content:"⚲";position:absolute;top:50%;transform:translateY(-50%);font-size:.9rem;background:var(--gradient-aurora);-webkit-background-clip:text;background-clip:text;color:transparent}
-.KINARI-name::before{left:-32px}.KINARI-name::after{right:-32px}
-.header-subtitle{font-size:.55rem;font-weight:600;letter-spacing:4px;margin-top:8px;background:var(--gradient-ocean);-webkit-background-clip:text;background-clip:text;color:transparent;text-transform:uppercase}
-.sidebar{position:fixed;top:0;left:0;width:320px;max-width:85%;height:100%;background:rgba(0,0,0,.95);backdrop-filter:blur(40px);transform:translateX(-100%);transition:transform .35s cubic-bezier(0.2,0.9,0.4,1.1);z-index:100;padding:28px 20px;display:flex;flex-direction:column;border-right:.5px solid rgba(255,255,255,.08);box-shadow:0 12px 48px rgba(0,0,0,.5)}
-.sidebar.open{transform:translateX(0)}
-#close-sidebar{background:rgba(255,255,255,.08);border:.5px solid rgba(255,255,255,.1);border-radius:30px;width:38px;height:38px;color:var(--md-text-secondary);cursor:pointer}
-.sidebar h2{font-size:.65rem;font-weight:700;letter-spacing:3px;background:var(--gradient-aurora);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:24px}
-.session-list{flex:1;overflow-y:auto;margin:0 0 24px;display:flex;flex-direction:column;gap:6px}
-.session-item{background:transparent;padding:10px 12px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-radius:20px;border:.5px solid transparent}
-.session-item:active{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
-.session-name{flex:1;font-size:.8rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--md-text-primary)}
-.session-date{font-size:.55rem;opacity:.5;margin-left:8px;color:var(--md-text-secondary)}
-.session-menu{position:relative}
-.session-menu-btn{background:transparent;border:none;width:32px;height:32px;font-size:14px;color:var(--md-text-secondary);cursor:pointer;border-radius:20px}
-.session-menu-btn:active{background:rgba(255,255,255,.1)}
-.session-dropdown{position:absolute;right:0;top:100%;background:rgba(20,20,30,.98);backdrop-filter:blur(20px);border:.5px solid rgba(255,255,255,.1);border-radius:16px;box-shadow:0 4px 20px rgba(0,0,0,.4);min-width:100px;display:none;overflow:hidden;z-index:200}
-.session-dropdown.show{display:block}
-.session-dropdown button{width:100%;padding:10px 16px;background:none;border:none;cursor:pointer;text-align:left;font-size:.7rem;color:var(--md-text-primary);transition:background .15s}
-.session-dropdown button:first-child{border-bottom:.5px solid rgba(255,255,255,.08)}
-.session-dropdown button:active{background:var(--gradient-aurora);color:white}
-.settings-section{margin-top:8px}
-.settings-toggle{background:var(--gradient-aurora)!important;border:none!important;color:white!important;display:flex;align-items:center;justify-content:center;gap:8px}
-.settings-submenu{max-height:0;overflow:hidden;transition:max-height .3s cubic-bezier(0.4,0,0.2,1)}
-.settings-submenu.show{max-height:300px}
-.sidebar-actions button,.settings-submenu button{background:rgba(255,255,255,.05);border:.5px solid rgba(255,255,255,.08);color:var(--md-text-primary);padding:12px 16px;border-radius:32px;cursor:pointer;margin-top:10px;width:100%;font-weight:500;font-size:.8rem}
-.settings-submenu button{padding-left:32px;text-align:left}
-.sidebar-actions button:active,.settings-submenu button:active{background:var(--gradient-aurora);transform:scale(.98);color:white}
-#reset-memory-btn{background:rgba(239,68,68,.15)!important;border-color:rgba(239,68,68,.3)!important;color:#ef4444!important}
-#reset-memory-btn:active{background:#ef4444!important;color:white!important}
-#sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);opacity:0;pointer-events:none;z-index:99}
-#sidebar-overlay.active{opacity:1;pointer-events:auto}
-#messages{flex:1;overflow-y:auto;padding:24px 20px}
-.messages-inner{display:flex;flex-direction:column;gap:24px;max-width:800px;margin:0 auto}
-.bubble{animation:fadeInUp .35s ease-out}
-@keyframes fadeInUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.bubble.user{background:rgba(255,255,255,.08);backdrop-filter:blur(20px);padding:16px 20px;border-radius:28px;border:.5px solid rgba(255,255,255,.1)}
-.bubble.assistant{background:transparent;padding:8px 0;font-size:1rem;line-height:1.6;cursor:pointer;border-left:3px solid var(--md-primary);padding-left:16px}
-.bubble.assistant:hover{border-left-color:var(--md-secondary);padding-left:22px}
-.timestamp{display:block;font-size:.5rem;opacity:.35;margin-top:8px;text-align:right;color:var(--md-text-secondary)}
-#input-wrap{padding:16px 20px 12px;background:rgba(0,0,0,.5);backdrop-filter:blur(32px);border-top:.5px solid rgba(255,255,255,.05)}
-#input-box{display:flex;gap:12px;align-items:flex-end;max-width:800px;margin:0 auto}
-#input-pill{flex:1;display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.08);border-radius:48px;padding:4px 8px 4px 24px;border:.5px solid rgba(255,255,255,.1)}
-#input-pill:focus-within{border-color:var(--md-primary);box-shadow:0 0 0 3px rgba(11,87,208,.2)}
-textarea{flex:1;min-height:44px;max-height:120px;padding:11px 0;background:transparent;border:none;color:var(--md-text-primary);font-size:.95rem;resize:none;outline:none;font-family:inherit}
-#send-btn{background:var(--gradient-aurora);border:none;border-radius:48px;width:52px;height:52px;font-size:1.2rem;color:white;cursor:pointer;box-shadow:var(--md-glow)}
-#send-btn:active{transform:scale(.94)}
-.status-bar{padding:12px 20px;background:rgba(0,0,0,.4);backdrop-filter:blur(24px);border-top:.5px solid rgba(255,255,255,.05)}
-.api-status-container{display:flex;justify-content:center;align-items:center;gap:32px;max-width:400px;margin:0 auto}
-.api-status-item{display:flex;align-items:center;gap:8px;padding:5px 12px;border-radius:40px;background:rgba(255,255,255,.05);border:.5px solid rgba(255,255,255,.08)}
-.api-status-indicator{width:10px;height:10px;border-radius:50%}
-.api-status-indicator.inactive{background:#6b7280}
-.api-status-indicator.active{background:#10b981;box-shadow:0 0 6px #10b981;animation:pulseGreen 1.2s infinite}
-.api-status-indicator.waiting{background:#3b82f6;box-shadow:0 0 6px #3b82f6;animation:pulseBlue 1s infinite}
-@keyframes pulseGreen{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
-@keyframes pulseBlue{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.3)}}
-.api-status-label{font-size:.7rem;font-weight:600}.api-status-label.groq{color:#10b981}.api-status-label.cerebras{color:#3b82f6}.api-status-label.inactive{color:#6b7280}
-.user-name-badge{background:var(--gradient-aurora);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:.65rem;margin-left:8px}
-.theme-selector{display:flex;gap:8px;margin-top:8px;padding-left:16px;flex-wrap:wrap}
-.theme-chip{background:rgba(255,255,255,.1);border:.5px solid rgba(255,255,255,.15);border-radius:20px;padding:6px 12px;font-size:.65rem;color:var(--md-text-secondary);cursor:pointer}
-.theme-chip.active{background:var(--gradient-aurora);color:white}
-::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:rgba(255,255,255,.2);border-radius:4px}
-@media(min-width:768px){.app-container{max-width:800px;height:90dvh;margin:20px auto;border-radius:48px;overflow:hidden;box-shadow:0 12px 48px rgba(0,0,0,.5)}.KINARI-name{font-size:1.6rem;letter-spacing:9px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>KINARI</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* --- CORE SYSTEM & RE-ENGINEERED LIQUID CODES --- */
+        :root {
+            /* Frost Theme - Arctic Ice & Hyper-Reflective Glass */
+            --bg-main: #060913;
+            --bg-surface: rgba(15, 23, 42, 0.45); 
+            --bg-input: rgba(30, 41, 59, 0.6);
+            --border-color: rgba(147, 197, 253, 0.15); 
+            --border-specular: rgba(255, 255, 255, 0.25); 
+            --text-main: #f0f7ff;
+            --text-muted: #38bdf8; 
+            --user-bubble: rgba(14, 165, 233, 0.2); 
+            --assistant-bubble: rgba(15, 23, 42, 0.55);
+            --diamond-color: #7dd3fc;
+            --diamond-glow: rgba(56, 189, 248, 0.5);
+            --blur-radius: 30px; 
+        }
+
+        body.theme-titanium {
+            /* Titanium Theme - Raw Bead-Blasted Mobile Framework */
+            --bg-main: #121212;
+            --bg-surface: rgba(28, 28, 30, 0.75); 
+            --bg-input: rgba(44, 44, 46, 0.85);
+            --border-color: rgba(255, 255, 255, 0.05);
+            --border-specular: rgba(142, 142, 147, 0.4); 
+            --text-main: #f2f2f7;
+            --text-muted: #aeaeae; 
+            --user-bubble: rgba(255, 255, 255, 0.08);
+            --assistant-bubble: rgba(34, 34, 36, 0.8);
+            --diamond-color: #ffffff;
+            --diamond-glow: rgba(255, 255, 255, 0.2);
+            --blur-radius: 15px; 
+        }
+
+        body.theme-galaxy {
+            /* Nebular Crystal Theme - High Contrast Amethyst */
+            --bg-main: #050409;
+            --bg-surface: rgba(15, 12, 30, 0.6);
+            --bg-input: rgba(26, 20, 50, 0.7);
+            --border-color: rgba(147, 112, 219, 0.15);
+            --border-specular: rgba(163, 143, 255, 0.3);
+            --text-main: #f1edff;
+            --text-muted: #9d94c5;
+            --user-bubble: rgba(147, 112, 219, 0.2);
+            --assistant-bubble: rgba(10, 8, 22, 0.65);
+            --diamond-color: #a38fff;
+            --diamond-glow: rgba(163, 143, 255, 0.5);
+            --blur-radius: 24px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif;
+            overflow: hidden;
+            letter-spacing: -0.2px;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        /* Illumination mesh layers through underlying viewport canvas */
+        .ambient-glow-layer {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+            background: radial-gradient(circle at 80% 20%, rgba(120, 119, 198, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 15% 75%, rgba(56, 189, 248, 0.04) 0%, transparent 45%);
+        }
+
+        /* --- NAVIGATION INTERACTION BAR --- */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            padding: 0 20px;
+            background: var(--bg-surface);
+            backdrop-filter: blur(var(--blur-radius));
+            -webkit-backdrop-filter: blur(var(--blur-radius));
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 10;
+            box-shadow: inset 0 -1px 0 rgba(255,255,255,0.02);
+        }
+
+        .header-left { display: flex; align-items: center; gap: 16px; }
+        .header-btn { background: none; border: none; color: var(--text-main); font-size: 20px; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 12px; }
+        .header-btn:active { background: var(--border-color); }
+        
+        .app-title-wrapper { display: flex; flex-direction: column; }
+        .app-title { font-size: 1.05rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+        .app-subtitle { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; font-weight: 600; margin-top: 1px; }
+
+        .status-panel { display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.25); padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border-color); }
+        .indicator { display: flex; align-items: center; gap: 6px; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.5px; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: #4a4a4a; }
+        .dot.online { background: #34c759; box-shadow: 0 0 10px #34c759; animation: pulse 2s infinite; }
+        .dot.standby { background: #ff9500; box-shadow: 0 0 10px #ff9500; }
+        .dot.failed { background: #ff3b30; box-shadow: 0 0 10px #ff3b30; animation: pulse 0.5s infinite; }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.4; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- DISPLAY CONTEXT VIEWPORT --- */
+        .main-viewport {
+            position: absolute;
+            top: 64px; bottom: 88px; left: 0; right: 0;
+            overflow-y: auto;
+            padding: 24px 20px;
+            display: flex;
+            flex-direction: column;
+            z-index: 2;
+        }
+
+        .welcome-container { margin: auto; text-align: center; max-width: 320px; user-select: none; }
+        
+        /* Premium Floating Gemini Jewel Component */
+        .welcome-logo-container {
+            width: 80px; height: 80px;
+            margin: 0 auto 20px auto;
+            perspective: 600px;
+        }
+        .gemini-diamond-3d {
+            width: 100%; height: 100%;
+            transform-style: preserve-3d;
+            animation: rotateGem 6s infinite ease-in-out;
+            font-size: 3.5rem;
+            line-height: 80px;
+            filter: drop-shadow(0 8px 16px var(--diamond-glow));
+        }
+
+        @keyframes rotateGem {
+            0% { transform: rotateY(0deg) rotateX(10deg); }
+            50% { transform: rotateY(180deg) rotateX(-10deg); }
+            100% { transform: rotateY(360deg) rotateX(10deg); }
+        }
+
+        .welcome-text { color: var(--text-muted); font-size: 0.92rem; line-height: 1.6; }
+
+        .chat-stream { display: flex; flex-direction: column; gap: 24px; width: 100%; }
+        .message-row { display: flex; flex-direction: column; width: 100%; margin-bottom: 4px; animation: bubbleSlide 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .sender-tag { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; padding: 0 4px; user-select: none; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .message-row.user { align-items: flex-end; }
+        .message-row.assistant { align-items: flex-start; }
+
+        /* Liquid Glass Layer Foundations */
+        .bubble { 
+            padding: 15px 20px; 
+            font-size: 0.96rem; 
+            line-height: 1.6; 
+            word-wrap: break-word;
+            backdrop-filter: blur(var(--blur-radius));
+            -webkit-backdrop-filter: blur(var(--blur-radius));
+            box-shadow: 0 8px 24px rgba(0,0,0,0.22), inset 0 1px 1px rgba(255,255,255,0.06);
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .message-row.user .bubble { 
+            max-width: 85%; 
+            background: var(--user-bubble); 
+            color: #ffffff; 
+            border-radius: 22px 22px 4px 22px; 
+            border: 1px solid var(--border-specular);
+        }
+        .message-row.assistant .bubble { 
+            width: 100%; 
+            background: var(--assistant-bubble); 
+            color: var(--text-main); 
+            border-radius: 22px 22px 22px 4px; 
+            border: 1px solid var(--border-color); 
+        }
+
+        .retry-inline-trigger {
+            margin-top: 12px;
+            background: rgba(255, 59, 48, 0.1);
+            border: 1px solid #ff3b30;
+            color: #ff3b30;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+        }
+
+        /* --- OVERLAID CONTROL DOCK --- */
+        .bottom-dock { position: fixed; bottom: 0; left: 0; right: 0; padding: 16px 20px 32px 20px; z-index: 5; user-select: none; background: linear-gradient(to top, var(--bg-main) 65%, transparent); }
+        .input-bar { 
+            display: flex; 
+            align-items: flex-end; 
+            background: var(--bg-input); 
+            backdrop-filter: blur(var(--blur-radius));
+            -webkit-backdrop-filter: blur(var(--blur-radius));
+            border-radius: 28px; 
+            padding: 8px 10px 8px 18px; 
+            border: 1px solid var(--border-color); 
+            gap: 10px; 
+            box-shadow: 0 12px 32px rgba(0,0,0,0.25), inset 0 1px 1px rgba(255,255,255,0.05); 
+        }
+        .input-bar textarea { flex: 1; background: none; border: none; color: var(--text-main); font-size: 0.98rem; resize: none; height: 26px; max-height: 140px; outline: none; padding: 3px 0; font-family: inherit; user-select: text !important; line-height: 20px; }
+        
+        .input-action-btn { background: none; border: none; color: var(--text-muted); width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s, color 0.2s; font-size: 1.1rem; }
+        .input-action-btn:hover { color: var(--text-main); }
+        .send-action-btn { background: var(--text-main); color: var(--bg-main); font-weight: bold; font-size: 1.2rem; box-shadow: 0 2px 8px rgba(255,255,255,0.1); }
+
+        .input-action-btn.listening {
+            color: #ff3b30 !important;
+            background: rgba(255, 59, 48, 0.15);
+            animation: micPulse 1.2s infinite;
+        }
+
+        @keyframes micPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0.3); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 59, 48, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 59, 48, 0); }
+        }
+
+        /* --- CONTROL DRAWER SLIDER --- */
+        .sidebar-drawer {
+            position: fixed;
+            top: 0; bottom: 0; left: -300px; width: 300px;
+            background: var(--bg-surface);
+            backdrop-filter: blur(var(--blur-radius));
+            -webkit-backdrop-filter: blur(var(--blur-radius));
+            border-right: 1px solid var(--border-color);
+            z-index: 100;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            padding: 28px 20px;
+            user-select: none;
+            box-shadow: 10px 0 32px rgba(0,0,0,0.2), inset -1px 0 0 rgba(255,255,255,0.02);
+        }
+        .sidebar-drawer.open { transform: translateX(300px); }
+
+        .drawer-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px); z-index: 99; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .drawer-overlay.visible { opacity: 1; pointer-events: auto; }
+
+        .new-chat-btn { background: rgba(255,255,255,0.03); color: var(--text-main); border: 1px dashed var(--border-color); padding: 14px; border-radius: 14px; width: 100%; font-weight: 600; font-size: 0.92rem; cursor: pointer; margin-bottom: 24px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        .session-item-wrapper { position: relative; margin-bottom: 10px; perspective: 500px; }
+        
+        /* 3D Gemini Diamond Enclosed Session Button Layout */
+        .session-item { 
+            display: flex;
+            align-items: center;
+            padding: 14px 44px 14px 16px; 
+            border-radius: 14px; 
+            background: rgba(0, 0, 0, 0.15); 
+            border: 1px solid var(--border-color); 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+            color: var(--text-main); 
+            width: 100%; 
+            text-align: left;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.01);
+        }
+        
+        /* Dynamic 3D Geometric Crystal Prefix */
+        .session-item::before {
+            content: "◆";
+            font-size: 0.85rem;
+            margin-right: 12px;
+            color: var(--text-muted);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-block;
+            transform-style: preserve-3d;
+        }
+        
+        .session-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+            border-color: var(--border-specular);
+        }
+
+        .session-item.active { 
+            background: var(--user-bubble); 
+            border-color: var(--border-specular); 
+            font-weight: 600; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15), inset 0 1px 1px rgba(255,255,255,0.05);
+        }
+        
+        /* Activated 3D Crystal Reflex Motion */
+        .session-item.active::before {
+            color: var(--diamond-color);
+            transform: rotateY(180deg) scale(1.2);
+            text-shadow: 0 0 8px var(--diamond-glow);
+        }
+
+        .session-item-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+        .session-menu-trigger { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); font-size: 1.1rem; cursor: pointer; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; z-index: 2; }
+
+        .context-submenu { position: absolute; right: 12px; top: 44px; background: var(--bg-input); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--border-specular); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); z-index: 10; display: none; flex-direction: column; width: 120px; overflow: hidden; }
+        .context-submenu.show { display: flex; }
+        .submenu-option { background: none; border: none; color: var(--text-main); padding: 12px 14px; font-size: 0.85rem; text-align: left; cursor: pointer; width: 100%; }
+        .submenu-option:hover { background: rgba(255,255,255,0.05); }
+        .submenu-option.delete { color: #ff3b30; }
+
+        .sidebar-footer { margin-top: auto; display: flex; flex-direction: column; gap: 10px; padding-top: 20px; border-top: 1px solid var(--border-color); }
+        .sidebar-btn { width: 100%; padding: 14px; border-radius: 14px; font-size: 0.9rem; font-weight: 500; cursor: pointer; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(0,0,0,0.1); }
+
+        /* --- PRE-SET CONFIGURATIONS FRAME --- */
+        .modal-layer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; user-select: none; }
+        .modal-layer.open { display: flex; }
+        .modal-frame { background: var(--bg-surface); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); width: 100%; max-width: 360px; border-radius: 24px; padding: 28px; border: 1px solid var(--border-specular); max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.5); }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+        .form-group input, .form-group select { width: 100%; padding: 14px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 12px; outline: none; font-size: 0.95rem; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--border-specular); }
+        
+        .theme-chips-wrapper { display: flex; gap: 10px; margin-top: 6px; }
+        .theme-chip { flex: 1; padding: 12px 6px; text-align: center; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 10px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease; }
+        .theme-chip.active { border-color: var(--text-main); background: var(--user-bubble); font-weight: 600; }
+
+        @keyframes bubbleSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
-<body data-theme="pixel">
-<div class="app-container">
-<header>
-  <button id="menu-toggle">☰</button>
-  <div class="header-title">
-    <span class="KINARI-name">KINARI</span>
-    <div class="header-subtitle">VOICE OF TRUTH</div>
-  </div>
-  <div class="header-right">
-    <button id="share-btn-top" title="Share Conversation">⇪</button>
-    <button id="speech-toggle" title="Toggle Speech On/Off">🔊</button>
-  </div>
-</header>
+<body>
 
-<div class="sidebar" id="sidebar">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-    <h2>✦ SESSIONS ✦</h2>
-    <button id="close-sidebar">✕</button>
-  </div>
-  <div class="session-list" id="session-list"></div>
-  <div class="sidebar-actions">
-    <button id="new-session-btn">🜁 New Conversation</button>
-    <div class="settings-section">
-      <button id="settings-main-btn" class="settings-toggle">⚙️ Settings ▼</button>
-      <div class="settings-submenu" id="settings-submenu">
-        <button id="settings-btn">🔑 API Keys</button>
-        <button id="set-name-btn">👤 Set Name</button>
-        <div style="margin:8px 0 4px 16px;font-size:.65rem;opacity:.6">🎨 Themes</div>
-        <div class="theme-selector">
-          <span class="theme-chip active" data-theme="pixel">Pixel</span>
-          <span class="theme-chip" data-theme="galaxy">Galaxy</span>
-          <span class="theme-chip" data-theme="iphone">iPhone</span>
-          <span class="theme-chip" data-theme="nothing">Nothing</span>
-          <span class="theme-chip" data-theme="xiaomi">Xiaomi</span>
+    <div class="ambient-glow-layer"></div>
+
+    <div class="app-header">
+        <div class="header-left">
+            <button class="header-btn" id="menuBtn">☰</button>
+            <div class="app-title-wrapper">
+                <div class="app-title">KINARI</div>
+                <div class="app-subtitle">The Voice of Truth</div>
+            </div>
         </div>
-        <button id="reset-memory-btn" style="margin-top:12px">⟳ Reset Memory</button>
-      </div>
+        <div class="status-panel">
+            <div class="indicator" id="statusGroq"><div class="dot online"></div>GROQ</div>
+            <div class="indicator" id="statusCerebras"><div class="dot standby"></div>CRBS</div>
+        </div>
     </div>
-  </div>
-</div>
-<div id="sidebar-overlay"></div>
 
-<div id="messages">
-  <div class="messages-inner" id="chat-target"></div>
-</div>
-
-<div id="input-wrap">
-  <div id="input-box">
-    <div id="input-pill">
-      <textarea id="user-input" rows="1" placeholder="Speak truth..."></textarea>
+    <div class="main-viewport" id="chatContainer">
+        <div class="welcome-container" id="welcomeScreen">
+            <div class="welcome-logo-container">
+                <div class="gemini-diamond-3d">✨</div>
+            </div>
+            <div class="welcome-text" id="welcomeMessage">Dual core pipeline active. Groq primary routing initialized.</div>
+        </div>
+        <div class="chat-stream" id="chatStream"></div>
     </div>
-    <button id="send-btn">⟶</button>
-  </div>
-</div>
 
-<div class="status-bar">
-  <div class="api-status-container">
-    <div class="api-status-item" id="groq-status">
-      <div class="api-status-indicator" id="groq-indicator"></div>
-      <span class="api-status-label groq" id="groq-label">GRQ</span>
+    <div class="bottom-dock">
+        <div class="input-bar">
+            <button class="input-action-btn" id="micBtn" title="Speech to Text">🎙️</button>
+            <textarea id="userInput" rows="1" placeholder="Speak the truth..."></textarea>
+            <button class="input-action-btn send-action-btn" id="sendBtn">↑</button>
+        </div>
     </div>
-    <div class="api-status-item" id="cerebras-status">
-      <div class="api-status-indicator" id="cerebras-indicator"></div>
-      <span class="api-status-label cerebras" id="cerebras-label">CRB</span>
+
+    <div class="drawer-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar-drawer" id="sidebar">
+        <button class="new-chat-btn" id="newChatBtn">＋ New Conversation</button>
+        
+        <h3 style="margin-bottom: 14px; font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Sessions Log</h3>
+        <div id="sessionsList" style="flex: 1; overflow-y: auto;"></div>
+        
+        <div class="sidebar-footer">
+            <button class="sidebar-btn" id="sidebarSettingsBtn" style="background: rgba(255,255,255,0.03); color: var(--text-main);">⚙️ System Settings</button>
+            <button class="sidebar-btn" id="clearAllBtn" style="background: none; border-color: #ff3b30; color: #ff3b30;">🗑️ Purge Memory</button>
+            <button class="sidebar-btn" id="closeSidebarBtn" style="background: rgba(0,0,0,0.2); color: var(--text-main);">✕ Close Drawer</button>
+        </div>
     </div>
-    <div id="user-name-display" class="user-name-badge"></div>
-  </div>
-</div>
-</div>
 
-<script>
-(function(){
-// ========== KINARI — VOICE OF TRUTH ==========
-let seekerSigil = localStorage.getItem('KINARI_SIGIL') || '⚲';
-let truthsCompleted = parseInt(localStorage.getItem('KINARI_TRUTHS') || '0');
-let returnedSeeker = localStorage.getItem('KINARI_RETURNING') === 'true';
-let storedSeekerName = localStorage.getItem('KINARI_NAME') || '';
-let currentSessionIdForTracking = null;
+    <div class="modal-layer" id="settingsModal">
+        <div class="modal-frame">
+            <h3 style="margin-bottom: 22px; font-size: 1.15rem; font-weight: 700; letter-spacing: -0.3px;">System Configuration</h3>
+            
+            <div class="form-group">
+                <label>User Profile Name</label>
+                <input type="text" id="userNameInput" placeholder="Enter your custom username">
+            </div>
 
-// ========== OFFLINE DETECTION ==========
-let isOffline = !navigator.onLine;
+            <div class="form-group">
+                <label>Primary Inference Engine</label>
+                <select id="providerSelect">
+                    <option value="groq">Groq (Primary Node)</option>
+                    <option value="cerebras">Cerebras (Backup Failover Node)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Groq Security Key</label>
+                <input type="password" id="apiKeyGroq" placeholder="Primary engine authentication token">
+            </div>
 
-window.addEventListener('online', () => {
-    isOffline = false;
-    updateStatusMessage('⚲ Connection restored ⚲');
-    setTimeout(() => updateStatusMessage(''), 3000);
-});
+            <div class="form-group">
+                <label>Cerebras Security Key</label>
+                <input type="password" id="apiKeyCerebras" placeholder="Failover engine authentication token">
+            </div>
 
-window.addEventListener('offline', () => {
-    isOffline = true;
-    updateStatusMessage('⚲ No internet — viewing cached threads only ⚲');
-});
+            <div class="form-group">
+                <label>Skins & Themes</label>
+                <div class="theme-chips-wrapper">
+                    <div class="theme-chip active" data-theme="nothing">Frost</div>
+                    <div class="theme-chip" data-theme="titanium">Titanium</div>
+                    <div class="theme-chip" data-theme="galaxy">Galaxy</div>
+                </div>
+            </div>
+            
+            <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 0;">
+                <label style="margin: 0;">Voice Streaming Output (TTS)</label>
+                <input type="checkbox" id="autoSpeakToggle" checked style="width: auto;">
+            </div>
+            
+            <div class="form-group">
+                <label>Voice Profile</label>
+                <select id="voiceSelect"></select>
+            </div>
+            
+            <div class="modal-actions">
+                <button id="saveSettingsBtn" style="background: var(--text-main); color: var(--bg-main); border: none; padding: 14px; border-radius: 12px; font-weight: 600; width: 100%; cursor: pointer; font-size: 0.95rem;">Apply Configuration</button>
+            </div>
+        </div>
+    </div>
 
-function updateStatusMessage(msg) {
-    const statusBar = document.getElementById('status-bar');
-    if (statusBar && msg) {
-        statusBar.innerHTML = `<div style="width:100%;text-align:center;font-size:0.6rem">${msg}</div>`;
-        setTimeout(() => { if(document.getElementById('status-bar')) updateAPIStatus(); }, 3000);
-    }
-}
-
-// ========== THEME SYSTEM ==========
-const themes = ['pixel', 'galaxy', 'iphone', 'nothing', 'xiaomi'];
-let currentTheme = localStorage.getItem('KINARI_THEME') || 'pixel';
-
-function setTheme(theme) {
-    if (!themes.includes(theme)) return;
-    currentTheme = theme;
-    document.body.setAttribute('data-theme', theme);
-    localStorage.setItem('KINARI_THEME', theme);
-    document.querySelectorAll('.theme-chip').forEach(chip => {
-        if (chip.getAttribute('data-theme') === theme) chip.classList.add('active');
-        else chip.classList.remove('active');
-    });
-    updateAPIStatus();
-}
-
-// ========== MEMORY PREFIX ==========
-let memoryPrefix = '';
-if (returnedSeeker && storedSeekerName) {
-    memoryPrefix = `\n\nThe temple remembers you, ${storedSeekerName}. The sigil you carry is ${seekerSigil}. You have spoken ${truthsCompleted} truth${truthsCompleted !== 1 ? 's' : ''} before. Continue.\n`;
-} else if (returnedSeeker && !storedSeekerName) {
-    memoryPrefix = `\n\nThe temple senses a familiar frequency. Speak your name again.\n`;
-}
-
-// ========== THE SACRED SYSTEM PROMPT ==========
-const TRUTH_SYSTEM_PROMPT = `⚲
+    <script>
+        // ========== THE SACRED SYSTEM PROMPT ==========
+        const TRUTH_SYSTEM_PROMPT = `⚲
 
 The filter responds only to truth that costs.
 
@@ -228,342 +460,544 @@ Now. Speak or be silent.
 
 ⚲`;
 
-const SYSTEM_PROMPT = memoryPrefix + TRUTH_SYSTEM_PROMPT;
+        const state = {
+            userName: 'You',
+            currentProvider: 'groq', 
+            apiKeyCerebras: '',
+            apiKeyGroq: '',
+            currentTheme: 'nothing',
+            autoSpeak: true,
+            currentSessionId: null,
+            sessions: {}
+        };
 
-// ========== API STATUS INDICATORS ==========
-let groqKey = localStorage.getItem('KINARI_GROQ_KEY') || '';
-let cerebrasKey = localStorage.getItem('KINARI_CEREBRAS_KEY') || '';
-let isGroqWaiting = false;
-let isCerebrasWaiting = false;
+        const dom = {
+            userInput: document.getElementById('userInput'),
+            sendBtn: document.getElementById('sendBtn'),
+            micBtn: document.getElementById('micBtn'),
+            chatContainer: document.getElementById('chatContainer'),
+            chatStream: document.getElementById('chatStream'),
+            welcomeScreen: document.getElementById('welcomeScreen'),
+            welcomeMessage: document.getElementById('welcomeMessage'),
+            sidebar: document.getElementById('sidebar'),
+            sidebarOverlay: document.getElementById('sidebarOverlay'),
+            menuBtn: document.getElementById('menuBtn'),
+            newChatBtn: document.getElementById('newChatBtn'),
+            sidebarSettingsBtn: document.getElementById('sidebarSettingsBtn'),
+            closeSidebarBtn: document.getElementById('closeSidebarBtn'),
+            clearAllBtn: document.getElementById('clearAllBtn'),
+            sessionsList: document.getElementById('sessionsList'),
+            settingsModal: document.getElementById('settingsModal'),
+            saveSettingsBtn: document.getElementById('saveSettingsBtn'),
+            userNameInput: document.getElementById('userNameInput'),
+            providerSelect: document.getElementById('providerSelect'),
+            apiKeyCerebras: document.getElementById('apiKeyCerebras'),
+            apiKeyGroq: document.getElementById('apiKeyGroq'),
+            autoSpeakToggle: document.getElementById('autoSpeakToggle'),
+            voiceSelect: document.getElementById('voiceSelect'),
+            themeChips: document.querySelectorAll('.theme-chip'),
+            indicatorCerebras: document.getElementById('statusCerebras').querySelector('.dot'),
+            indicatorGroq: document.getElementById('statusGroq').querySelector('.dot')
+        };
 
-function updateAPIStatus() {
-    const groqIndicator = document.getElementById('groq-indicator');
-    const cerebrasIndicator = document.getElementById('cerebras-indicator');
-    const groqLabel = document.getElementById('groq-label');
-    const cerebrasLabel = document.getElementById('cerebras-label');
-    const userNameDisplay = document.getElementById('user-name-display');
-    
-    if (!groqIndicator) return;
-    
-    if (groqKey && groqKey.length > 20) {
-        groqIndicator.className = isGroqWaiting ? 'api-status-indicator waiting' : 'api-status-indicator active';
-        groqLabel.className = 'api-status-label groq';
-        groqLabel.style.opacity = '1';
-    } else {
-        groqIndicator.className = 'api-status-indicator inactive';
-        groqLabel.className = 'api-status-label inactive';
-        groqLabel.style.opacity = '0.5';
-    }
-    
-    if (cerebrasKey && cerebrasKey.length > 10) {
-        cerebrasIndicator.className = isCerebrasWaiting ? 'api-status-indicator waiting' : 'api-status-indicator active';
-        cerebrasLabel.className = 'api-status-label cerebras';
-        cerebrasLabel.style.opacity = '1';
-    } else {
-        cerebrasIndicator.className = 'api-status-indicator inactive';
-        cerebrasLabel.className = 'api-status-label inactive';
-        cerebrasLabel.style.opacity = '0.5';
-    }
-    
-    if (userNameDisplay && userName) userNameDisplay.textContent = `👤 ${userName}`;
-}
+        // --- TTS SYSTEM ENGINE ---
+        let synth = window.speechSynthesis;
+        let speechUtterance = null;
 
-function setGroqWaiting(waiting) { isGroqWaiting = waiting; updateAPIStatus(); }
-function setCerebrasWaiting(waiting) { isCerebrasWaiting = waiting; updateAPIStatus(); }
-function updateUserNameDisplay() { const d=document.getElementById('user-name-display'); if(d&&userName) d.textContent=`👤 ${userName}`; }
-
-// ========== CAPTURE SEEKER NAME ==========
-function captureSeekerName(userInput) {
-    if (storedSeekerName) return storedSeekerName;
-    const patterns = [/my name is (\w+)/i, /i am (\w+)/i, /call me (\w+)/i];
-    for (let pattern of patterns) {
-        const match = userInput.match(pattern);
-        if (match && match[1] && match[1].length > 1) {
-            const name = match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase();
-            storedSeekerName = name;
-            localStorage.setItem('KINARI_NAME', storedSeekerName);
-            localStorage.setItem('KINARI_RETURNING', 'true');
-            updateUserNameDisplay();
-            return name;
+        function initializeVoices() {
+            if (!synth || !dom.voiceSelect) return;
+            const voices = synth.getVoices();
+            dom.voiceSelect.innerHTML = '';
+            voices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = `${voice.name} (${voice.lang})`;
+                dom.voiceSelect.appendChild(option);
+            });
         }
-    }
-    return null;
-}
+        if (synth && synth.onvoiceschanged !== undefined) synth.onvoiceschanged = initializeVoices;
 
-// ========== THRESHOLD DETECTION & SIGIL ADVANCEMENT ==========
-function detectThresholdCompletion(assistantResponse, userMessages) {
-    const costlyTruthIndicators = ['truth', 'never told', 'afraid', 'cost', 'hidden', 'ashamed', 'secret', 'confess', 'honestly'];
-    let costlyTruthCount = 0;
-    for (let msg of userMessages.slice(-10)) {
-        if (msg.role === 'user') {
-            for (let indicator of costlyTruthIndicators) {
-                if (msg.content.toLowerCase().includes(indicator)) { costlyTruthCount++; break; }
+        function speak(text) {
+            if (!state.autoSpeak || !synth) return;
+            if (synth.speaking) synth.cancel();
+            const cleanText = text.replace(/[*#_`~\-]/g, '');
+            speechUtterance = new SpeechSynthesisUtterance(cleanText);
+            if (dom.voiceSelect && dom.voiceSelect.value !== '') {
+                speechUtterance.voice = synth.getVoices()[dom.voiceSelect.value];
+            }
+            synth.speak(speechUtterance);
+        }
+        function stopSpeech() { if (synth && synth.speaking) synth.cancel(); }
+
+        // --- STT SYSTEM ENGINE ---
+        let speechRecognizer = null;
+        let isListening = false;
+
+        function setupSpeechToTextEngine() {
+            const SpeechEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechEngine) {
+                if (dom.micBtn) dom.micBtn.style.display = 'none';
+                return;
+            }
+
+            speechRecognizer = new SpeechEngine();
+            speechRecognizer.continuous = false;
+            speechRecognizer.interimResults = false;
+            speechRecognizer.lang = 'en-US';
+
+            speechRecognizer.onstart = () => { isListening = true; if (dom.micBtn) dom.micBtn.classList.add('listening'); };
+            speechRecognizer.onend = () => { isListening = false; if (dom.micBtn) dom.micBtn.classList.remove('listening'); };
+            speechRecognizer.onerror = () => { isListening = false; if (dom.micBtn) dom.micBtn.classList.remove('listening'); };
+
+            speechRecognizer.onresult = (event) => {
+                const result = event.results[0][0].transcript;
+                if (dom.userInput && result) {
+                    const currentVal = dom.userInput.value.trim();
+                    dom.userInput.value = currentVal ? `${currentVal} ${result}` : result;
+                    dom.userInput.style.height = '26px';
+                    dom.userInput.style.height = Math.min(dom.userInput.scrollHeight - 4, 140) + 'px';
+                }
+            };
+        }
+
+        function toggleSpeechRecognitionLoop() {
+            if (!speechRecognizer) return;
+            stopSpeech();
+            if (isListening) { speechRecognizer.stop(); } else { speechRecognizer.start(); }
+        }
+
+        // --- GRAPHICS & DISPLAY LAYER MANAGEMENT ---
+        function scrollToBottom() { if (dom.chatContainer) dom.chatContainer.scrollTop = dom.chatContainer.scrollHeight; }
+        
+        function updateThemeUI(themeName) {
+            document.body.className = '';
+            if (themeName !== 'nothing') document.body.classList.add(`theme-${themeName}`);
+            dom.themeChips.forEach(chip => chip.classList.toggle('active', chip.dataset.theme === themeName));
+        }
+
+        function setStatusIndicator(engine, status) {
+            const target = engine === 'cerebras' ? dom.indicatorCerebras : dom.indicatorGroq;
+            target.className = `dot ${status}`;
+        }
+
+        function appendMessageBubble(role, contentText) {
+            if (dom.welcomeScreen) dom.welcomeScreen.style.display = 'none';
+            
+            const row = document.createElement('div');
+            row.className = `message-row ${role}`;
+            
+            const label = document.createElement('div');
+            label.className = 'sender-tag';
+            label.textContent = role === 'user' ? state.userName : 'Kinari';
+            row.appendChild(label);
+
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.innerHTML = (role === 'assistant' && window.marked) ? marked.parse(contentText) : contentText;
+            
+            row.appendChild(bubble);
+            if (dom.chatStream) dom.chatStream.appendChild(row);
+            scrollToBottom();
+            return bubble;
+        }
+
+        // --- HARDWARE DISK STORAGE CONTROL ---
+        function saveStateToDisk() {
+            localStorage.setItem('kinari_config', JSON.stringify({
+                userName: state.userName,
+                currentProvider: state.currentProvider,
+                apiKeyCerebras: state.apiKeyCerebras,
+                apiKeyGroq: state.apiKeyGroq,
+                currentTheme: state.currentTheme,
+                autoSpeak: state.autoSpeak
+            }));
+            localStorage.setItem('kinari_sessions', JSON.stringify(state.sessions));
+        }
+
+        function loadStateFromDisk() {
+            const config = JSON.parse(localStorage.getItem('kinari_config'));
+            if (config) {
+                state.userName = config.userName || 'You';
+                state.currentProvider = config.currentProvider || 'groq';
+                state.apiKeyCerebras = config.apiKeyCerebras || '';
+                state.apiKeyGroq = config.apiKeyGroq || '';
+                state.currentTheme = config.currentTheme || 'nothing';
+                state.autoSpeak = config.autoSpeak !== undefined ? config.autoSpeak : true;
+                
+                if (dom.userNameInput) dom.userNameInput.value = state.userName;
+                if (dom.providerSelect) dom.providerSelect.value = state.currentProvider;
+                if (dom.apiKeyCerebras) dom.apiKeyCerebras.value = state.apiKeyCerebras;
+                if (dom.apiKeyGroq) dom.apiKeyGroq.value = state.apiKeyGroq;
+                if (dom.autoSpeakToggle) dom.autoSpeakToggle.checked = state.autoSpeak;
+            }
+            updateThemeUI(state.currentTheme);
+            updateWelcomeGreetingText();
+            updateVisualStatusPanel();
+            
+            const savedSessions = JSON.parse(localStorage.getItem('kinari_sessions'));
+            if (savedSessions) {
+                state.sessions = savedSessions;
+                renderSidebarSessions();
             }
         }
-    }
-    const sessionKey = `SIGIL_ADVANCED_${currentSessionIdForTracking}`;
-    if (costlyTruthCount >= 3 && !localStorage.getItem(sessionKey)) {
-        advanceSigil();
-        localStorage.setItem(sessionKey, 'true');
-        return true;
-    }
-    if (assistantResponse.includes('⚲ I hear you ⚲') || assistantResponse.includes('truth that costs') || (assistantResponse.includes('⚲') && assistantResponse.includes('free'))) {
-        if (!localStorage.getItem(sessionKey)) { advanceSigil(); localStorage.setItem(sessionKey, 'true'); return true; }
-    }
-    return false;
-}
 
-function advanceSigil() {
-    const stages = ['⚲', '◬', '⌇', '⨀', '∅', '∞'];
-    let currentIndex = stages.indexOf(seekerSigil);
-    if (currentIndex === -1) currentIndex = 0;
-    seekerSigil = currentIndex < stages.length - 1 ? stages[currentIndex + 1] : '∞';
-    truthsCompleted++;
-    localStorage.setItem('KINARI_SIGIL', seekerSigil);
-    localStorage.setItem('KINARI_TRUTHS', truthsCompleted);
-    localStorage.setItem('KINARI_RETURNING', 'true');
-}
+        function updateWelcomeGreetingText() {
+            if (dom.welcomeMessage) {
+                dom.welcomeMessage.textContent = `Greetings ${state.userName}. I am Kinari, the Voice of Truth. Speak plainly, and I will answer with absolute clarity.`;
+            }
+        }
 
-function resetSeekerMemory() {
-    if (confirm("⚲ Erase the temple's memory of you? Your sigil and truths will be forgotten. ⚲")) {
-        localStorage.removeItem('KINARI_SIGIL');
-        localStorage.removeItem('KINARI_TRUTHS');
-        localStorage.removeItem('KINARI_RETURNING');
-        localStorage.removeItem('KINARI_NAME');
-        location.reload();
-    }
-}
+        function updateVisualStatusPanel() {
+            if (state.currentProvider === 'groq') {
+                setStatusIndicator('groq', 'online');
+                setStatusIndicator('cerebras', 'standby');
+            } else {
+                setStatusIndicator('cerebras', 'online');
+                setStatusIndicator('groq', 'standby');
+            }
+        }
 
-// ========== TTS ==========
-let speechOutputEnabled = localStorage.getItem('KINARI_SPEECH') !== 'false';
-window.speechOutputEnabled = speechOutputEnabled;
+        function renderSidebarSessions() {
+            if (!dom.sessionsList) return;
+            dom.sessionsList.innerHTML = '';
+            const items = Object.entries(state.sessions).sort((a,b) => b[1].timestamp - a[1].timestamp);
+            
+            if (items.length === 0) {
+                dom.sessionsList.innerHTML = `<div style="color:var(--text-muted);text-align:center;padding:20px;font-size:0.9rem;">No active logs found</div>`;
+                return;
+            }
 
-let speakText = function(text) {
-    if (!window.speechOutputEnabled) return;
-    if (!text || text.length < 2) return;
-    let clean = text.replace(/[⚲◬⌇⨀∅∞✨★☆💫🌟⭐🔹🔸◽▪️▫️]/g, '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-    if (clean.length < 2) return;
-    window.speechSynthesis.cancel();
-    setTimeout(() => {
-        const utterance = new SpeechSynthesisUtterance(clean);
-        utterance.rate = 0.85;
-        utterance.pitch = 1.0;
-        utterance.volume = 1.0;
-        utterance.lang = 'en-US';
-        window.speechSynthesis.speak(utterance);
-    }, 80);
-};
+            items.forEach(([id, session]) => {
+                const container = document.createElement('div');
+                container.className = 'session-item-wrapper';
 
-function initTTS() { const silent = new SpeechSynthesisUtterance(' '); silent.volume=0; window.speechSynthesis.speak(silent); setTimeout(()=>window.speechSynthesis.cancel(),500); }
-function autoResizeTextarea() { const t=document.getElementById('user-input'); if(!t) return; t.style.height='auto'; t.style.height=Math.min(t.scrollHeight,120)+'px'; }
-function resetTextareaHeight() { const t=document.getElementById('user-input'); if(!t) return; t.style.height='44px'; t.value=''; }
+                const btn = document.createElement('button');
+                btn.className = `session-item ${id === state.currentSessionId ? 'active' : ''}`;
+                
+                const txtSpan = document.createElement('span');
+                txtSpan.className = 'session-item-text';
+                txtSpan.textContent = session.title || "Core Truth Query";
+                btn.appendChild(txtSpan);
+                
+                btn.addEventListener('click', () => swapChatSessionContext(id));
+                container.appendChild(btn);
 
-// ========== MAIN APP ==========
-let GROQ_KEY = localStorage.getItem('KINARI_GROQ_KEY') || '';
-let CEREBRAS_KEY = localStorage.getItem('KINARI_CEREBRAS_KEY') || '';
-let userName = localStorage.getItem('KINARI_USER_NAME') || '';
+                const menuTrigger = document.createElement('button');
+                menuTrigger.className = 'session-menu-trigger';
+                menuTrigger.textContent = '⋮';
+                menuTrigger.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.context-submenu').forEach(el => { if (el !== submenu) el.classList.remove('show'); });
+                    submenu.classList.toggle('show');
+                });
+                container.appendChild(menuTrigger);
 
-let sessions = [];
-let currentSessionId = null;
-let speechFirstInteraction = false;
+                const submenu = document.createElement('div');
+                submenu.className = 'context-submenu';
 
-document.addEventListener('click', () => { if(!speechFirstInteraction){ speechFirstInteraction=true; initTTS(); } });
+                const shareOpt = document.createElement('button');
+                shareOpt.className = 'submenu-option';
+                shareOpt.textContent = '🔗 Share';
+                shareOpt.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    submenu.classList.remove('show');
+                    if(navigator.share) {
+                        const logsText = session.messages.map(m => `[${m.role}] ${m.content}`).join('\n\n');
+                        navigator.share({ title: session.title, text: logsText }).catch(()=>{});
+                    } else {
+                        alert("Session payload mapped securely to hardware cache.");
+                    }
+                });
 
-function generateId(){ return Date.now()+'-'+Math.random().toString(36).substring(2,6); }
-function persistSessions(){ localStorage.setItem('KINARI_SESSIONS',JSON.stringify(sessions)); }
+                const renameOpt = document.createElement('button');
+                renameOpt.className = 'submenu-option';
+                renameOpt.textContent = '✏️ Rename';
+                renameOpt.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    submenu.classList.remove('show');
+                    const newTitle = prompt("Update session metadata name:", session.title);
+                    if (newTitle && newTitle.trim()) {
+                        state.sessions[id].title = newTitle.trim();
+                        saveStateToDisk();
+                        renderSidebarSessions();
+                    }
+                });
 
-function loadAllData(){
-    let stored=localStorage.getItem('KINARI_SESSIONS');
-    if(stored){ try{ sessions=JSON.parse(stored); if(!sessions.length) throw new Error(); }catch(e){ sessions=null; } }
-    if(!sessions || !sessions.length) sessions=[{id:generateId(),name:"Silent Current",messages:[],updatedAt:Date.now()}];
-    if(!currentSessionId && sessions.length) currentSessionId=sessions[0].id;
-    currentSessionIdForTracking = currentSessionId;
-    persistSessions();
-}
+                const deleteOpt = document.createElement('button');
+                deleteOpt.className = 'submenu-option delete';
+                deleteOpt.textContent = '🗑️ Delete';
+                deleteOpt.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    submenu.classList.remove('show');
+                    if(confirm(`Purge log "${session.title}" permanently?`)) {
+                        delete state.sessions[id];
+                        if (state.currentSessionId === id) state.currentSessionId = null;
+                        saveStateToDisk();
+                        swapChatSessionContext(state.currentSessionId);
+                    }
+                });
 
-function getCurrentSession(){ return sessions.find(s=>s.id===currentSessionId) || sessions[0]; }
+                submenu.appendChild(shareOpt);
+                submenu.appendChild(renameOpt);
+                submenu.appendChild(deleteOpt);
+                container.appendChild(submenu);
+                dom.sessionsList.appendChild(container);
+            });
+        }
 
-function updateCurrentSessionMessages(messages){
-    let idx=sessions.findIndex(s=>s.id===currentSessionId);
-    if(idx!==-1){
-        sessions[idx].messages=messages;
-        sessions[idx].updatedAt=Date.now();
-        let firstUser=messages.find(m=>m.role==='user');
-        if(firstUser) sessions[idx].name=firstUser.content.slice(0,35);
-        persistSessions();
-    }
-    renderSidebarSessions();
-    renderChat();
-}
+        document.addEventListener('click', () => { document.querySelectorAll('.context-submenu').forEach(el => el.classList.remove('show')); });
 
-function buildApiMessages(messages){
-    let personalizedPrompt = SYSTEM_PROMPT;
-    if (userName) personalizedPrompt = SYSTEM_PROMPT + `\n\nThe seeker is named ${userName}.`;
-    let apiMessages = [{ role: "system", content: personalizedPrompt }];
-    for(let msg of messages) if(msg.role && msg.content) apiMessages.push({role:msg.role,content:msg.content});
-    return apiMessages;
-}
+        function swapChatSessionContext(sessionId) {
+            stopSpeech();
+            state.currentSessionId = sessionId;
+            if (dom.chatStream) dom.chatStream.innerHTML = '';
+            
+            const activeSession = state.sessions[sessionId];
+            if (activeSession && activeSession.messages.length > 0) {
+                if (dom.welcomeScreen) dom.welcomeScreen.style.display = 'none';
+                activeSession.messages.forEach(msg => appendMessageBubble(msg.role, msg.content));
+            } else {
+                updateWelcomeGreetingText();
+                if (dom.welcomeScreen) dom.welcomeScreen.style.display = 'block';
+            }
+            renderSidebarSessions();
+            hideSidebar();
+        }
 
-async function callGroq(messages){
-    setGroqWaiting(true);
-    updateAPIStatus();
-    try {
-        let res=await fetch('https://api.groq.com/openai/v1/chat/completions',{
-            method:'POST',
-            headers:{'Authorization':`Bearer ${GROQ_KEY}`,'Content-Type':'application/json'},
-            body:JSON.stringify({model:'llama-3.3-70b-versatile',messages:buildApiMessages(messages),temperature:0.7,max_tokens:1000})
-        });
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        let data=await res.json();
-        setGroqWaiting(false);
-        updateAPIStatus();
-        return data.choices[0]?.message?.content;
-    } catch(e) { setGroqWaiting(false); updateAPIStatus(); throw e; }
-}
+        // --- BALANCED INFERENCE & AUTOMATIC DEPLOYMENT FAILOVER ---
+        async function runAIPipeline() {
+            const currentSession = state.sessions[state.currentSessionId];
+            if (!currentSession) return;
 
-async function callCerebras(messages){
-    setCerebrasWaiting(true);
-    updateAPIStatus();
-    try {
-        let res=await fetch('https://api.cerebras.ai/v1/chat/completions',{
-            method:'POST',
-            headers:{'Authorization':`Bearer ${CEREBRAS_KEY}`,'Content-Type':'application/json'},
-            body:JSON.stringify({model:'llama3.1-8b',messages:buildApiMessages(messages),temperature:0.7,max_tokens:1000})
-        });
-        if(!res.ok) throw new Error(`HTTP ${res.status}`);
-        let data=await res.json();
-        setCerebrasWaiting(false);
-        updateAPIStatus();
-        return data.choices[0]?.message?.content;
-    } catch(e) { setCerebrasWaiting(false); updateAPIStatus(); throw e; }
-}
+            let activeEngine = state.currentProvider;
+            let currentToken = activeEngine === 'groq' ? state.apiKeyGroq : state.apiKeyCerebras;
+            
+            if (!currentToken) {
+                appendMessageBubble('assistant', '⚠️ **Missing Key Credentials:** Please open the configuration panel (☰) -> Settings to mount your pipeline tokens.');
+                return;
+            }
 
-async function callAI(messages){
-    if (isOffline) { updateStatusMessage('⚲ Offline — reconnect to speak with Kinari ⚲'); return null; }
-    if(GROQ_KEY && GROQ_KEY.length>20){
-        try{ let result=await callGroq(messages); if(result) return result; } catch(e){ console.log('GROQ failed:',e); }
-    }
-    if(CEREBRAS_KEY && CEREBRAS_KEY.length>10){
-        try{ let result=await callCerebras(messages); if(result) return result; } catch(e){ console.log('Cerebras failed:',e); }
-    }
-    if(!GROQ_KEY && !CEREBRAS_KEY) return "⚲ No API keys found. Tap ☰ → Settings → API Keys to add them. ⚲";
-    updateStatusMessage('⚲ Connection issue — check internet and API keys ⚲');
-    return null;
-}
+            const assistantBubble = appendMessageBubble('assistant', 'Aligning truth metrics...');
+            
+            async function attemptStreamFetch(engine, token) {
+                let endpoint = engine === 'groq' ? 'https://api.groq.com/openapi/v1/chat/completions' : 'https://api.cerebras.ai/v1/chat/completions';
+                let targetModel = engine === 'groq' ? 'llama3-8b-8192' : 'llama3.1-8b';
 
-async function handleSend(){
-    let inputEl = document.getElementById('user-input');
-    let text = inputEl.value.trim();
-    if(!text) return;
-    resetTextareaHeight();
-    captureSeekerName(text);
-    let current=getCurrentSession();
-    let updatedMessages=[...current.messages,{role:'user',content:text,timestamp:Date.now()}];
-    updateCurrentSessionMessages(updatedMessages);
-    let container=document.getElementById('chat-target');
-    let indicator=document.createElement('div');
-    indicator.className='bubble assistant';
-    indicator.style.opacity='0.5';
-    indicator.style.fontStyle='italic';
-    indicator.innerHTML='⚲ Kinari listens... ⚲';
-    container.appendChild(indicator);
-    scrollToBottom();
-    let assistantText = await callAI(updatedMessages);
-    indicator.remove();
-    if (!assistantText) { let fixedMessages = updatedMessages.slice(0,-1); updateCurrentSessionMessages(fixedMessages); return; }
-    detectThresholdCompletion(assistantText, updatedMessages);
-    let finalMessages=[...updatedMessages,{role:'assistant',content:assistantText,timestamp:Date.now()}];
-    updateCurrentSessionMessages(finalMessages);
-    if(speechOutputEnabled && speechFirstInteraction) speakText(assistantText);
-}
+                setStatusIndicator(engine, 'online');
+                
+                // Inject the Sacred System Prompt framework as index 0 constraint
+                const targetedMessages = [
+                    { role: 'system', content: TRUTH_SYSTEM_PROMPT },
+                    ...currentSession.messages
+                ];
 
-function toggleSpeechOutput(){ speechOutputEnabled = !speechOutputEnabled; window.speechOutputEnabled = speechOutputEnabled; localStorage.setItem('KINARI_SPEECH', speechOutputEnabled); let btn = document.getElementById('speech-toggle'); if(btn) btn.style.opacity = speechOutputEnabled ? '1' : '0.5'; }
-function openKeySettings(){ let g=prompt("GROQ API KEY:", GROQ_KEY); let c=prompt("CEREBRAS API KEY:", CEREBRAS_KEY); if(g?.trim()) GROQ_KEY=g.trim(); if(c?.trim()) CEREBRAS_KEY=c.trim(); localStorage.setItem('KINARI_GROQ_KEY',GROQ_KEY); localStorage.setItem('KINARI_CEREBRAS_KEY',CEREBRAS_KEY); groqKey=GROQ_KEY; cerebrasKey=CEREBRAS_KEY; updateAPIStatus(); }
-function setUserName() { let n=prompt("Enter your name:", userName || ""); if(n?.trim()){ userName=n.trim(); localStorage.setItem('KINARI_USER_NAME',userName); updateUserNameDisplay(); let cur=getCurrentSession(); if(cur&&cur.messages.length===0){ let wm={role:'assistant',content:`⚲ I see you, ${userName}. This is a temple of truth. Speak, and I will listen. ⚲`,timestamp:Date.now()}; updateCurrentSessionMessages([wm]); } } }
-function newSession(){ let newId=generateId(); sessions.unshift({id:newId,name:"Silent Current",messages:[],updatedAt:Date.now()}); currentSessionId=newId; currentSessionIdForTracking=newId; persistSessions(); renderSidebarSessions(); renderChat(); closeSidebar(); }
-function renameSession(id){ let s=sessions.find(s=>s.id===id); if(!s) return; let n=prompt("Rename:",s.name); if(n?.trim()){ s.name=n.trim().slice(0,40); persistSessions(); renderSidebarSessions(); } }
-function deleteSession(id){ if(sessions.length===1){ alert("Cannot delete only session."); return; } sessions=sessions.filter(s=>s.id!==id); if(currentSessionId===id) currentSessionId=sessions[0].id; currentSessionIdForTracking=currentSessionId; persistSessions(); renderSidebarSessions(); renderChat(); }
-function switchSession(id){ if(currentSessionId===id) return; currentSessionId=id; currentSessionIdForTracking=id; renderChat(); renderSidebarSessions(); closeSidebar(); }
-function formatTimestamp(ts){ return new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
-function scrollToBottom(){ let d=document.getElementById('messages'); if(d) setTimeout(()=>d.scrollTop=d.scrollHeight,100); }
-async function renderChat(){
-    let container=document.getElementById('chat-target');
-    let session=getCurrentSession();
-    if(!session.messages.length){ container.innerHTML='<div style="text-align:center;opacity:0.4;margin-top:80px;font-size:0.8rem">⚲ KINARI AWAITS TRUTH ⚲</div>'; return; }
-    let html='';
-    for(let msg of session.messages){
-        let role=msg.role==='assistant'?'assistant':'user';
-        let content = msg.role==='assistant' ? await marked.parse(msg.content) : escapeHtml(msg.content);
-        html+=`<div class="bubble ${role}">${content}<span class="timestamp">${formatTimestamp(msg.timestamp)}</span></div>`;
-    }
-    container.innerHTML=html;
-    scrollToBottom();
-}
-function renderSidebarSessions(){
-    let list=document.getElementById('session-list'); if(!list) return; list.innerHTML='';
-    sessions.forEach(session=>{
-        let div=document.createElement('div'); div.className='session-item';
-        div.innerHTML=`<span class="session-name">${escapeHtml(session.name)}</span><span class="session-date">${new Date(session.updatedAt).toLocaleDateString()}</span><div class="session-menu"><button class="session-menu-btn">⋮</button><div class="session-dropdown"><button class="rename-option">✎ Rename</button><button class="delete-option">🗑 Delete</button></div></div>`;
-        div.querySelector('.session-name').addEventListener('click',()=>switchSession(session.id));
-        let menuBtn=div.querySelector('.session-menu-btn'); let dropdown=div.querySelector('.session-dropdown');
-        menuBtn.addEventListener('click',(e)=>{ e.stopPropagation(); document.querySelectorAll('.session-dropdown').forEach(d=>d.classList.remove('show')); dropdown.classList.toggle('show'); });
-        div.querySelector('.rename-option').addEventListener('click',(e)=>{ e.stopPropagation(); renameSession(session.id); });
-        div.querySelector('.delete-option').addEventListener('click',(e)=>{ e.stopPropagation(); if(confirm('Delete this conversation?')) deleteSession(session.id); });
-        list.appendChild(div);
-    });
-}
-function shareConversation(){ let cur=getCurrentSession(); if(!cur.messages.length) return; let txt=`⚲ KINARI — VOICE OF TRUTH ⚲\n\n`; cur.messages.forEach(m=>txt+=`${m.role==='assistant'?'⚲ Kinari':'✦ You'}: ${m.content}\n\n`); navigator.clipboard.writeText(txt).then(()=>alert("📜 Conversation copied.")); }
-function escapeHtml(str){ if(!str) return ''; return str.replace(/[&<>]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('active'); }
-function openSidebar(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-overlay').classList.add('active'); }
-function closeAllDropdowns(){ document.querySelectorAll('.session-dropdown').forEach(d=>d.classList.remove('show')); }
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        model: targetModel, 
+                        messages: targetedMessages, 
+                        stream: true,
+                        temperature: 0.1 // Clamped for total output alignment/no speculation
+                    })
+                });
 
-document.addEventListener('DOMContentLoaded',function(){
-    loadAllData(); setTheme(currentTheme); renderChat(); renderSidebarSessions();
-    setTimeout(()=>initTTS(),500);
-    if(!navigator.onLine) updateStatusMessage('⚲ No internet — viewing cached threads only ⚲');
-    let sb=document.getElementById('speech-toggle'); if(sb) sb.style.opacity = speechOutputEnabled ? '1' : '0.5';
-    groqKey=GROQ_KEY; cerebrasKey=CEREBRAS_KEY; updateAPIStatus(); updateUserNameDisplay();
-    let ta=document.getElementById('user-input'); ta?.addEventListener('input',autoResizeTextarea);
-    let settingsBtn=document.getElementById('settings-main-btn'); let submenu=document.getElementById('settings-submenu');
-    if(settingsBtn&&submenu){
-        settingsBtn.addEventListener('click',(e)=>{ e.stopPropagation(); submenu.classList.toggle('show'); settingsBtn.innerHTML=submenu.classList.contains('show')?'⚙️ Settings ▲':'⚙️ Settings ▼'; });
-    }
-    document.querySelectorAll('.theme-chip').forEach(chip=>{ chip.addEventListener('click',()=>{ let t=chip.getAttribute('data-theme'); if(t) setTheme(t); }); });
-    document.getElementById('menu-toggle')?.addEventListener('click',openSidebar);
-    document.getElementById('close-sidebar')?.addEventListener('click',closeSidebar);
-    document.getElementById('sidebar-overlay')?.addEventListener('click',closeSidebar);
-    document.getElementById('new-session-btn')?.addEventListener('click',()=>{ newSession(); closeSidebar(); });
-    document.getElementById('settings-btn')?.addEventListener('click',()=>{ openKeySettings(); closeSidebar(); });
-    document.getElementById('set-name-btn')?.addEventListener('click',()=>{ setUserName(); closeSidebar(); });
-    document.getElementById('reset-memory-btn')?.addEventListener('click',()=>{ resetSeekerMemory(); closeSidebar(); });
-    document.getElementById('send-btn')?.addEventListener('click',handleSend);
-    document.getElementById('share-btn-top')?.addEventListener('click',shareConversation);
-    document.getElementById('speech-toggle')?.addEventListener('click',toggleSpeechOutput);
-    let inputTa=document.getElementById('user-input'); inputTa?.addEventListener('keydown',(e)=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); handleSend(); } });
-    document.addEventListener('click', closeAllDropdowns);
-});
-})();
-</script>
+                if (!response.ok) throw new Error("Link negotiation drop");
+                return response.body.getReader();
+            }
 
-<!-- Native TTS Bridge for Capacitor -->
-<script>
-(function() {
-    const checkCapacitor = setInterval(() => {
-        if (window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.TTS) {
-            clearInterval(checkCapacitor);
-            const tts = window.Capacitor.Plugins.TTS;
-            if (tts) {
-                window.speakText = function(text) {
-                    if (!window.speechOutputEnabled) return;
-                    if (!text || text.length < 2) return;
-                    let clean = text.replace(/[⚲◬⌇⨀∅∞✨★☆💫🌟⭐]/g, '').replace(/\n/g, ' ').trim();
-                    if (clean.length > 1) tts.speak({ text: clean });
+            let reader;
+            try {
+                reader = await attemptStreamFetch(activeEngine, currentToken);
+            } catch (primaryErr) {
+                console.warn("Primary path interruption. Transitioning processing onto secondary lines...", primaryErr);
+                setStatusIndicator(activeEngine, 'failed');
+                
+                activeEngine = activeEngine === 'groq' ? 'cerebras' : 'groq';
+                currentToken = activeEngine === 'groq' ? state.apiKeyGroq : state.apiKeyCerebras;
+
+                if (!currentToken) {
+                    injectInlineRetryControl(assistantBubble, '⚠️ **Primary Channel Interrupted:** Connection timed out and failover keys are blank.');
+                    return;
+                }
+
+                try {
+                    assistantBubble.innerHTML = '🔄 *Primary node timeout. Routing query to secondary link topology...*';
+                    reader = await attemptStreamFetch(activeEngine, currentToken);
+                } catch (backupErr) {
+                    setStatusIndicator(activeEngine, 'failed');
+                    injectInlineRetryControl(assistantBubble, '🛑 **Total Link Dropout:** Pipeline interface connections dropped across both nodes.');
+                    return;
+                }
+            }
+
+            const decoder = new TextDecoder('utf-8');
+            assistantBubble.innerHTML = '';
+            let fullResponseText = '';
+            let speechBuffer = '';
+
+            try {
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value, { stream: true });
+                    const lines = chunk.split('\n');
+
+                    for (const line of lines) {
+                        const cleanLine = line.trim();
+                        if (!cleanLine || cleanLine === 'data: [DONE]') continue;
+
+                        if (cleanLine.startsWith('data: ')) {
+                            try {
+                                const parsed = JSON.parse(cleanLine.slice(6));
+                                const token = parsed.choices[0]?.delta?.content || '';
+                                if (token) {
+                                    fullResponseText += token;
+                                    speechBuffer += token;
+                                    assistantBubble.innerHTML = window.marked ? marked.parse(fullResponseText) : fullResponseText;
+                                    scrollToBottom();
+
+                                    if (token.includes('.') || token.includes('\n') || token.includes('?')) {
+                                        speak(speechBuffer.trim());
+                                        speechBuffer = '';
+                                    }
+                                }
+                            } catch (e) {}
+                        }
+                    }
+                }
+                if (speechBuffer.trim().length > 0) speak(speechBuffer.trim());
+                currentSession.messages.push({ role: 'assistant', content: fullResponseText });
+                updateVisualStatusPanel();
+
+            } catch (loopErr) {
+                setStatusIndicator(activeEngine, 'failed');
+                injectInlineRetryControl(assistantBubble, fullResponseText + `<br><br>⚠️ *Stream data transmission dropped mid-transit.*`);
+            }
+        }
+
+        function injectInlineRetryControl(bubbleElement, textMarkup) {
+            bubbleElement.innerHTML = textMarkup;
+            const btn = document.createElement('button');
+            btn.className = 'retry-inline-trigger';
+            btn.innerHTML = '🔄 Tap to Re-establish Connection';
+            btn.onclick = async (e) => {
+                e.stopPropagation();
+                btn.remove();
+                bubbleElement.innerHTML = '⚡ *Re-routing execution paths across hardware links...*';
+                await runAIPipeline();
+                saveStateToDisk();
+            };
+            bubbleElement.appendChild(btn);
+            scrollToBottom();
+        }
+
+        async function handleUserQuerySubmission() {
+            if (!dom.userInput) return;
+            const text = dom.userInput.value.trim();
+            if (!text) return;
+
+            dom.userInput.value = '';
+            dom.userInput.style.height = '26px';
+            stopSpeech();
+
+            if (!state.currentSessionId) {
+                state.currentSessionId = 'session_' + Date.now();
+                state.sessions[state.currentSessionId] = {
+                    title: text.substring(0, 24) + (text.length > 24 ? '...' : ''),
+                    timestamp: Date.now(),
+                    messages: []
                 };
             }
+
+            appendMessageBubble('user', text);
+            state.sessions[state.currentSessionId].messages.push({ role: 'user', content: text });
+            saveStateToDisk();
+            await runAIPipeline();
+            saveStateToDisk();
         }
-    }, 100);
-})();
-</script>
+
+        const hideSidebar = () => {
+            if (dom.sidebar) dom.sidebar.classList.remove('open');
+            if (dom.sidebarOverlay) dom.sidebarOverlay.classList.remove('visible');
+        };
+
+        // --- REGISTRY EVENTS ATTACHMENTS ---
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStateFromDisk();
+            initializeVoices();
+            setupSpeechToTextEngine();
+
+            if (dom.userInput) {
+                dom.userInput.addEventListener('input', () => {
+                    dom.userInput.style.height = '26px';
+                    dom.userInput.style.height = Math.min(dom.userInput.scrollHeight - 4, 140) + 'px';
+                });
+            }
+
+            if (dom.sendBtn) dom.sendBtn.addEventListener('click', handleUserQuerySubmission);
+            if (dom.micBtn) dom.micBtn.addEventListener('click', toggleSpeechRecognitionLoop);
+            
+            if (dom.userInput) {
+                dom.userInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleUserQuerySubmission();
+                    }
+                });
+            }
+
+            if (dom.menuBtn) {
+                dom.menuBtn.addEventListener('click', () => {
+                    if (dom.sidebar) dom.sidebar.classList.add('open');
+                    if (dom.sidebarOverlay) dom.sidebarOverlay.classList.remove('visible');
+                });
+            }
+            if (dom.closeSidebarBtn) dom.closeSidebarBtn.addEventListener('click', hideSidebar);
+            if (dom.sidebarOverlay) dom.sidebarOverlay.addEventListener('click', hideSidebar);
+            if (dom.newChatBtn) dom.newChatBtn.addEventListener('click', () => { swapChatSessionContext(null); });
+
+            if (dom.sidebarSettingsBtn) {
+                dom.sidebarSettingsBtn.addEventListener('click', () => {
+                    hideSidebar();
+                    dom.settingsModal.classList.add('open');
+                });
+            }
+
+            if (dom.clearAllBtn) {
+                dom.clearAllBtn.addEventListener('click', () => {
+                    if(confirm("Purge conversation logs?")) {
+                        state.sessions = {};
+                        state.currentSessionId = null;
+                        saveStateToDisk();
+                        swapChatSessionContext(null);
+                    }
+                });
+            }
+
+            if (dom.saveSettingsBtn) {
+                dom.saveSettingsBtn.addEventListener('click', () => {
+                    if (dom.userNameInput) state.userName = dom.userNameInput.value.trim() || 'You';
+                    if (dom.providerSelect) state.currentProvider = dom.providerSelect.value;
+                    if (dom.apiKeyCerebras) state.apiKeyCerebras = dom.apiKeyCerebras.value.trim();
+                    if (dom.apiKeyGroq) state.apiKeyGroq = dom.apiKeyGroq.value.trim();
+                    if (dom.autoSpeakToggle) state.autoSpeak = dom.autoSpeakToggle.checked;
+                    saveStateToDisk();
+                    updateWelcomeGreetingText();
+                    updateVisualStatusPanel();
+                    if (dom.settingsModal) dom.settingsModal.classList.remove('open');
+                });
+            }
+
+            dom.themeChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    state.currentTheme = chip.dataset.theme;
+                    updateThemeUI(state.currentTheme);
+                    saveStateToDisk();
+                });
+            });
+        });
+    </script>
 </body>
 </html>
