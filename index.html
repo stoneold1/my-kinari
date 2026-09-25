@@ -761,8 +761,6 @@ body {
       <div class="config-label">API Keys</div>
       <input class="config-input" id="s-groq-key" type="password" placeholder="Groq API Key" 
         autocomplete="off">
-      <input class="config-input" id="s-cerebras-key" type="password" placeholder="Cerebras API Key"
-        autocomplete="off">
       <input class="config-input" id="s-elevenlabs-key" type="password" placeholder="ElevenLabs API Key (optional)"
         autocomplete="off">
       <input class="config-input" id="s-elevenlabs-voice" placeholder="Voice ID (default: Adam)"
@@ -771,8 +769,7 @@ body {
     <div class="config-section">
       <div class="config-label">Provider</div>
       <div class="row">
-        <button class="option-btn active" id="p-groq" onclick="setProvider('groq')">Groq</button>
-        <button class="option-btn" id="p-cerebras" onclick="setProvider('cerebras')">Cerebras</button>
+        <button class="option-btn active" id="p-groq">Groq (Free)</button>
       </div>
     </div>
     <div class="config-section">
@@ -1284,7 +1281,7 @@ const THEMES = [
   { id:'slate',    label:'Slate',    swatch:'linear-gradient(135deg,#0f172a,#94a3b8)', bar:'#0f172a', nav:'#0f172a', light:false },
 ];
 
-const PROVIDER_INITIALS = { groq:'GRQ', cerebras:'CRBS' };
+const PROVIDER_INITIALS = { groq:'GRQ' };
 const OFFLINE_TRUTHS = [
   "The signal is gone. The truth was never in the signal. ⚲",
   "Silence is not the absence of wisdom. Wisdom is the silence between words. ⚲",
@@ -1297,7 +1294,7 @@ const OFFLINE_TRUTHS = [
 ];
 
 var state = {
-  userName:'Seeker', apiKeyGroq:'', apiKeyCerebras:'',
+  userName:'Seeker', apiKeyGroq:'',
   provider:'groq', autoSpeak:true, echoMode:false,
   autoSend:false, fontSize:100, isMuted:false, theme:'nebula',
   truthsCompleted:0, currentSessionId:null, sessions:{},
@@ -1325,8 +1322,7 @@ var g = function(k,d) {
 function loadAll(){
   state.userName       = g('userName','Seeker');
   state.apiKeyGroq     = g('groqKey','');
-  state.apiKeyCerebras = g('cerebrasKey','');
-  state.provider       = g('provider','groq');
+  state.provider       = 'groq';
   state.autoSpeak      = g('autoSpeak',true);
   state.echoMode       = g('echoMode',false);
   state.autoSend       = g('autoSend',false);
@@ -1472,7 +1468,7 @@ function extractJournalThemes(entries, limit) {
 function updateStatusBadge(){
   var dot = document.getElementById('status-dot');
   var init = document.getElementById('provider-initials');
-  var key = state.provider==='groq' ? state.apiKeyGroq : state.apiKeyCerebras;
+  var key = state.apiKeyGroq;
   var online = isOnline();
   if (!online) {
     dot.className = '';
@@ -1481,9 +1477,9 @@ function updateStatusBadge(){
     dot.style.background = '';
     dot.className = (key&&key.trim()) ? 'ok' : '';
   }
-  init.textContent = online ? (PROVIDER_INITIALS[state.provider] || state.provider.toUpperCase()) : 'OFF';
+  init.textContent = online ? 'GRQ' : 'OFF';
   var el = document.getElementById('empty-instruction');
-  if(el) el.textContent = !online ? 'No signal — the scrolls remain open. ⚲' : (key&&key.trim()) ? 'Ask, and I shall unfold…' : 'Configure API key in Settings to begin.';
+  if(el) el.textContent = !online ? 'No signal — the scrolls remain open. ⚲' : (key&&key.trim()) ? 'Ask, and I shall unfold…' : 'Configure Groq API key in Settings to begin.';
 }
 
 function isOnline() { return navigator.onLine; }
@@ -1572,12 +1568,10 @@ function buildSystemPrompt() {
 async function extractAndSaveMemory(userText, kinariReply) {
   state.exchangeCount = (state.exchangeCount || 0) + 1;
   if (state.exchangeCount % 2 !== 0) return;
-  var apiKey = state.provider === 'groq' ? state.apiKeyGroq : state.apiKeyCerebras;
+  var apiKey = state.apiKeyGroq;
   if (!apiKey || !apiKey.trim()) return;
-  var url = state.provider === 'groq'
-    ? 'https://api.groq.com/openai/v1/chat/completions'
-    : 'https://api.cerebras.ai/v1/chat/completions';
-  var model = state.provider === 'groq' ? 'llama-3.3-70b-versatile' : 'gpt-oss-120b';
+  var url = 'https://api.groq.com/openai/v1/chat/completions';
+  var model = 'openai/gpt-oss-120b';
   var extractPrompt = 'From this exchange, extract 0-3 short factual memory lines about the seeker. \nOnly facts worth remembering long-term: beliefs, struggles, goals, values, recurring themes, significant life events.\nIf nothing worth saving, reply with exactly: NONE\nReply only with the facts, one per line, no bullets, no explanation.\n\nSeeker said: "' + userText.slice(0, 350) + '"\nKeeper replied: "' + kinariReply.slice(0, 350) + '"';
   try {
     var res = await fetch(url, {
@@ -1865,9 +1859,9 @@ async function sendMessage(override){
     return;
   }
 
-  var apiKey=state.provider==='groq'?state.apiKeyGroq:state.apiKeyCerebras;
+  var apiKey=state.apiKeyGroq;
   if(!apiKey||!apiKey.trim()){
-    var r={role:'assistant',content:'⚠️ API key missing for ' + PROVIDER_INITIALS[state.provider] + '. Configure in Settings.',timestamp:Date.now()};
+    var r={role:'assistant',content:'⚠️ Groq API key missing. Configure in Settings.',timestamp:Date.now()};
     sess.messages.push(r); appendMessage(r); s('sessions',state.sessions); openSettings(); 
     return;
   }
@@ -1881,10 +1875,8 @@ async function sendMessage(override){
   }
 
   setLoading(true);
-  var url=state.provider==='groq'
-    ?'https://api.groq.com/openai/v1/chat/completions'
-    :'https://api.cerebras.ai/v1/chat/completions';
-  var model=state.provider==='groq'?'llama-3.3-70b-versatile':'gpt-oss-120b';
+  var url='https://api.groq.com/openai/v1/chat/completions';
+  var model='openai/gpt-oss-120b';
   var apiMessages=[{role:'system',content:buildSystemPrompt()}].concat(sess.messages.map(function(m){ return {role:m.role,content:m.content}; }));
 
   try{
@@ -1914,7 +1906,10 @@ async function sendMessage(override){
     extractAndSaveMemory(text, content);
   } catch(err) {
     var msg = err.message || 'Network error';
-    if (msg.includes('429')) msg = state.provider === 'cerebras' ? '⚠️ Cerebras busy. Try Groq.' : '⚠️ Groq busy. Please wait.';
+    if (msg.includes('429')) msg = '⚠️ Groq rate limit reached. Please wait a moment.';
+    if (msg.includes('404')) msg = '⚠️ Model unavailable. Please verify Groq model access.';
+    if (msg.includes('401')) msg = '⚠️ Invalid Groq API key. Check Settings.';
+    if (msg.includes('402')) msg = '⚠️ Groq account issue. Check billing.';
     var r = { role: 'assistant', content: msg, timestamp: Date.now() };
     sess.messages.push(r);
     appendMessage(r);
@@ -2090,8 +2085,6 @@ function openSettings(){
   document.getElementById('s-groq-key').value=state.apiKeyGroq;
   document.getElementById('s-elevenlabs-key').value=g('elevenLabsKey','');
   document.getElementById('s-elevenlabs-voice').value=g('elevenLabsVoiceId','');
-  document.getElementById('s-cerebras-key').value=state.apiKeyCerebras;
-  setProviderUI(state.provider);
   buildThemeGrid();
   applyFontSize(state.fontSize);
   updateToggles();
@@ -2101,11 +2094,8 @@ function openSettings(){
   document.getElementById('settings-panel').classList.add('open');
 }
 function closeSettings(){ document.getElementById('settings-panel').classList.remove('open'); }
-function setProvider(p){ state.provider=p; setProviderUI(p); }
-function setProviderUI(p){
-  document.getElementById('p-groq').classList.toggle('active',p==='groq');
-  document.getElementById('p-cerebras').classList.toggle('active',p==='cerebras');
-}
+function setProvider(p){ state.provider='groq'; }
+function setProviderUI(p){ /* only Groq exists now */ }
 function toggleSetting(key){
   state[key]=!state[key]; 
   updateToggles();
@@ -2122,14 +2112,9 @@ function updateToggles(){
 function saveSettings(){
   state.userName=document.getElementById('s-username').value||'Seeker';
   state.apiKeyGroq=document.getElementById('s-groq-key').value;
-  state.apiKeyCerebras=document.getElementById('s-cerebras-key').value;
   s('elevenLabsKey', document.getElementById('s-elevenlabs-key').value);
   s('elevenLabsVoiceId', document.getElementById('s-elevenlabs-voice').value || 'pNInz6obpgDQGcFmaJgB');
-  ['userName','groqKey','cerebrasKey','provider','autoSpeak','echoMode','autoSend','fontSize','isMuted','theme'].forEach(function(k){
-    var stateKey={groqKey:'apiKeyGroq',cerebrasKey:'apiKeyCerebras'}[k]||k;
-    s(k,state[stateKey]!==undefined?state[stateKey]:state[k]);
-  });
-  s('userName',state.userName); s('groqKey',state.apiKeyGroq); s('cerebrasKey',state.apiKeyCerebras);
+  s('userName',state.userName); s('groqKey',state.apiKeyGroq);
   s('provider',state.provider); s('autoSpeak',state.autoSpeak); s('echoMode',state.echoMode);
   s('autoSend',state.autoSend); s('fontSize',state.fontSize); s('isMuted',state.isMuted); s('theme',state.theme);
   updateStatusBadge(); closeSettings(); showToast('Settings saved ⚲');
