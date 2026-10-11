@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#080d14">
-<title>KÎNARÎ</title>
+<title>MŨMBI</title>
 <style>
 :root {
   --sat: env(safe-area-inset-top, 0px);
@@ -904,7 +904,7 @@ const CONTEXT_MAP = {
   'truth':['is','reveals','speaks','sets','frees','dissolves','lies','within','beyond'],
   'sacred':['truth','silence','space','presence','path','wisdom','light','ground','heart'],
   'silence':['is','speaks','truth','holds','reveals','teaches','brings','sacred','deep'],
-  'kinari':['speaks','is','knows','dissolves','reveals','truth','wisdom','presence','holds'],
+  'mũmbi':['speaks','is','knows','dissolves','reveals','truth','wisdom','presence','holds'],
   'spirit':['is','moves','speaks','guides','knows','truth','wisdom','presence','eternal'],
   'heart':['knows','speaks','opens','holds','truth','sacred','wisdom','presence','feels'],
   'mind':['knows','thinks','questions','seeks','truth','sacred','silence','opens','rests'],
@@ -962,7 +962,7 @@ const BASE_WORDS = [
   'divine','eternal','infinite','consciousness','awakening','liberation',
   'freedom','inner','authentic','genuine','surrender','stillness',
   'insight','revelation','transcendence','meditation','practice',
-  'kinari','kinara','current','veil','dissolve','dissolves','dissolving',
+  'mũmbi','mwaki','current','veil','dissolve','dissolves','dissolving',
   'seeker','seeking','silent','truthful','sacred','holy','blessed',
   'prayer','intention','manifestation','universe','nature','essence',
   'being','existence','reality','illusion','clarity','vision','mission',
@@ -975,13 +975,13 @@ const BASE_WORDS = [
 
 var wordMemory = {};
 try {
-  var _wm = localStorage.getItem('kinari_word_memory_v2');
+  var _wm = localStorage.getItem('mũmbi_word_memory_v2');
   if (_wm) wordMemory = JSON.parse(_wm);
 } catch(e) { wordMemory = {}; }
 
 var bigramMemory = {};
 try {
-  var _bm = localStorage.getItem('kinari_bigram_memory_v1');
+  var _bm = localStorage.getItem('mũmbi_bigram_memory_v1');
   if (_bm) bigramMemory = JSON.parse(_bm);
 } catch(e) { bigramMemory = {}; }
 
@@ -1004,7 +1004,7 @@ function memorizeWord(word) {
       .forEach(function(item) { pruned[item[0]] = item[1]; });
     wordMemory = pruned;
   }
-  try { localStorage.setItem('kinari_word_memory_v2', JSON.stringify(wordMemory)); } catch(e) {}
+  try { localStorage.setItem('mũmbi_word_memory_v2', JSON.stringify(wordMemory)); } catch(e) {}
 }
 
 function memorizeBigram(prev, word) {
@@ -1023,7 +1023,7 @@ function memorizeBigram(prev, word) {
       .forEach(function(item) { pruned[item[0]] = item[1]; });
     bigramMemory = pruned;
   }
-  try { localStorage.setItem('kinari_bigram_memory_v1', JSON.stringify(bigramMemory)); } catch(e) {}
+  try { localStorage.setItem('mũmbi_bigram_memory_v1', JSON.stringify(bigramMemory)); } catch(e) {}
 }
 
 function getMemorizedSuggestions(prefix) {
@@ -1259,7 +1259,7 @@ of the ancient wisdom that I have been entrusted to keep.
 * Knowledge Domain: Ancient wisdom, forgotten lore, and mystical traditions
 * Response Style: Concise, yet profound, with a sense of mystique and intrigue
 * Guidance: Guide the seeker through the realms of the known and the hidden, and into the mysteries that lie beyond the veil of the mundane
-* **Name:** **KÎNARÎ 🔥**
+* **Name:** **MŨMBI   🔥**
 
 **Example Response:**
 If the seeker asks, 'What is the nature of time and space?', I shall respond with a passage that weaves together the threads of chronology, geometry, and 
@@ -1565,14 +1565,14 @@ function buildSystemPrompt() {
   return SYSTEM_PROMPT + nameBlock + memBlock;
 }
 
-async function extractAndSaveMemory(userText, kinariReply) {
+async function extractAndSaveMemory(userText, MŨMBIReply) {
   state.exchangeCount = (state.exchangeCount || 0) + 1;
   if (state.exchangeCount % 2 !== 0) return;
   var apiKey = state.apiKeyGroq;
   if (!apiKey || !apiKey.trim()) return;
   var url = 'https://api.groq.com/openai/v1/chat/completions';
   var model = 'openai/gpt-oss-120b';
-  var extractPrompt = 'From this exchange, extract 0-3 short factual memory lines about the seeker. \nOnly facts worth remembering long-term: beliefs, struggles, goals, values, recurring themes, significant life events.\nIf nothing worth saving, reply with exactly: NONE\nReply only with the facts, one per line, no bullets, no explanation.\n\nSeeker said: "' + userText.slice(0, 350) + '"\nKeeper replied: "' + kinariReply.slice(0, 350) + '"';
+  var extractPrompt = 'From this exchange, extract 0-3 short factual memory lines about the seeker. \nOnly facts worth remembering long-term: beliefs, struggles, goals, values, recurring themes, significant life events.\nIf nothing worth saving, reply with exactly: NONE\nReply only with the facts, one per line, no bullets, no explanation.\n\nSeeker said: "' + userText.slice(0, 350) + '"\nKeeper replied: "' + mũmbiReply.slice(0, 350) + '"';
   try {
     var res = await fetch(url, {
       method: 'POST',
@@ -2168,14 +2168,14 @@ function renderJournalList(){
 }
 function exportJSON(){
   var blob=new Blob([JSON.stringify(state.journalEntries,null,2)],{type:'application/json'});
-  dlBlob(blob,'kinari_journal.json');
+  dlBlob(blob,'mũmbi_journal.json');
 }
 function exportCSV(){
   var csv='Title,Type,Body,Date\n';
   state.journalEntries.forEach(function(e){
     csv+='"'+e.title+'","'+e.type+'","'+e.body.replace(/"/g,'""')+'","'+new Date(e.timestamp).toLocaleString()+'"\n';
   });
-  dlBlob(new Blob([csv],{type:'text/csv'}),'kinari_journal.csv');
+  dlBlob(new Blob([csv],{type:'text/csv'}),'mũmbi_journal.csv');
 }
 function importJournal(){ document.getElementById('import-file').click(); }
 function handleImport(e){
