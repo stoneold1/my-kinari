@@ -975,13 +975,13 @@ const BASE_WORDS = [
 
 var wordMemory = {};
 try {
-  var _wm = localStorage.getItem('mũmbi_word_memory_v2');
+  var _wm = localStorage.getItem('mumbi_word_memory_v2');
   if (_wm) wordMemory = JSON.parse(_wm);
 } catch(e) { wordMemory = {}; }
 
 var bigramMemory = {};
 try {
-  var _bm = localStorage.getItem('mũmbi_bigram_memory_v1');
+  var _bm = localStorage.getItem('mumbi_bigram_memory_v1');
   if (_bm) bigramMemory = JSON.parse(_bm);
 } catch(e) { bigramMemory = {}; }
 
@@ -1004,7 +1004,7 @@ function memorizeWord(word) {
       .forEach(function(item) { pruned[item[0]] = item[1]; });
     wordMemory = pruned;
   }
-  try { localStorage.setItem('mũmbi_word_memory_v2', JSON.stringify(wordMemory)); } catch(e) {}
+  try { localStorage.setItem('mumbi_word_memory_v2', JSON.stringify(wordMemory)); } catch(e) {}
 }
 
 function memorizeBigram(prev, word) {
@@ -1023,7 +1023,7 @@ function memorizeBigram(prev, word) {
       .forEach(function(item) { pruned[item[0]] = item[1]; });
     bigramMemory = pruned;
   }
-  try { localStorage.setItem('mũmbi_bigram_memory_v1', JSON.stringify(bigramMemory)); } catch(e) {}
+  try { localStorage.setItem('mumbi_bigram_memory_v1', JSON.stringify(bigramMemory)); } catch(e) {}
 }
 
 function getMemorizedSuggestions(prefix) {
@@ -1307,10 +1307,12 @@ var mediaRecorder = null;
 var audioChunks = [];
 
 // ── STORAGE HELPERS ──
-var s = function(k,v) { try{ localStorage.setItem('k_'+k, typeof v==='object'?JSON.stringify(v):String(v)); }catch(e){} };
+// NOTE: Prefix is now 'mumbi_' for consistency with raw memory keys.
+// Old data stored under 'k_' will NOT appear. See migration snippet if needed.
+var s = function(k,v) { try{ localStorage.setItem('mumbi_'+k, typeof v==='object'?JSON.stringify(v):String(v)); }catch(e){} };
 var g = function(k,d) {
   try{
-    var v = localStorage.getItem('k_'+k);
+    var v = localStorage.getItem('mumbi_'+k);
     if(v===null) return d;
     if(typeof d==='boolean') return v==='true';
     if(typeof d==='number') return Number(v);
@@ -1548,7 +1550,7 @@ function buildMemoryContext() {
     lines.push('\nRecent thread context:');
     var recentMsgs = sorted[0].messages.slice(-3);
     recentMsgs.forEach(function(m) {
-      var who = m.role === 'user' ? name : 'Keeper';
+      var who = m.role === 'user' ? name : 'Mũmbi';
       var content = m.content.slice(0, 100);
       lines.push(who + ': ' + content + (m.content.length > 100 ? '...' : ''));
     });
@@ -1565,14 +1567,14 @@ function buildSystemPrompt() {
   return SYSTEM_PROMPT + nameBlock + memBlock;
 }
 
-async function extractAndSaveMemory(userText, MŨMBIReply) {
+async function extractAndSaveMemory(userText, mũmbiReply) {
   state.exchangeCount = (state.exchangeCount || 0) + 1;
   if (state.exchangeCount % 2 !== 0) return;
   var apiKey = state.apiKeyGroq;
   if (!apiKey || !apiKey.trim()) return;
   var url = 'https://api.groq.com/openai/v1/chat/completions';
   var model = 'openai/gpt-oss-120b';
-  var extractPrompt = 'From this exchange, extract 0-3 short factual memory lines about the seeker. \nOnly facts worth remembering long-term: beliefs, struggles, goals, values, recurring themes, significant life events.\nIf nothing worth saving, reply with exactly: NONE\nReply only with the facts, one per line, no bullets, no explanation.\n\nSeeker said: "' + userText.slice(0, 350) + '"\nKeeper replied: "' + mũmbiReply.slice(0, 350) + '"';
+  var extractPrompt = 'From this exchange, extract 0-3 short factual memory lines about the seeker. \nOnly facts worth remembering long-term: beliefs, struggles, goals, values, recurring themes, significant life events.\nIf nothing worth saving, reply with exactly: NONE\nReply only with the facts, one per line, no bullets, no explanation.\n\nSeeker said: "' + userText.slice(0, 350) + '"\nMũmbi replied: "' + mũmbiReply.slice(0, 350) + '"';
   try {
     var res = await fetch(url, {
       method: 'POST',
@@ -1651,8 +1653,8 @@ function renameSession(id){
 
 function shareThread(id){
   var sess=state.sessions[id]; if(!sess) return;
-  var txt='Keeper — ' + sess.title + '\n\n';
-  (sess.messages||[]).forEach(function(m){ txt += (m.role==='user'?state.userName:'KEEPER') + ': ' + m.content + '\n\n'; });
+  var txt='Mũmbi — ' + sess.title + '\n\n';
+  (sess.messages||[]).forEach(function(m){ txt += (m.role==='user'?state.userName:'MŨMBI') + ': ' + m.content + '\n\n'; });
   if(navigator.share) navigator.share({text:txt}).catch(function(){});
   else navigator.clipboard.writeText(txt).then(function(){ showToast('Copied'); });
 }
@@ -1723,7 +1725,7 @@ function buildMessageEl(msg){
   var icon=isUser
     ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
     :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
-  meta.innerHTML=icon+'<span>'+(isUser?state.userName:'KEEPER')+'</span>';
+  meta.innerHTML=icon+'<span>'+(isUser?state.userName:'MŨMBI')+'</span>';
   var bubble=document.createElement('div'); bubble.className='bubble';
   bubble.textContent=msg.content;
   var time=document.createElement('div'); time.className='msg-time';
