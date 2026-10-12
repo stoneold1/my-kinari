@@ -131,6 +131,7 @@ body {
 }
 #status-dot { width: 7px; height: 7px; border-radius: 50%; background: #ff3b30; flex-shrink: 0; }
 #status-dot.ok { background: #34c759; }
+#status-dot.fallback { background: #ff9500; }
 #provider-initials { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--text2); }
 #chat-view { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
 #journal-view { flex: 1; display: none; overflow-y: auto; padding: 14px 8px 0; -webkit-overflow-scrolling: touch; }
@@ -648,15 +649,18 @@ body {
   <div id="input-dock">
     <div id="input-area">
       <textarea id="msg-input" rows="1" placeholder="Ask, and I shall unfold…"
-        onkeydown="handleKey(event)" oninput="autoResize(this)"
-        onfocus="onInputFocus()" onblur="onInputBlur()"
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="sentences"
-        spellcheck="false"
-        inputmode="text"
-        enterkeyhint="send"
-        aria-label="Message input"></textarea>
+  onkeydown="handleKey(event)" oninput="autoResize(this)"
+  onfocus="onInputFocus()" onblur="onInputBlur()"
+  autocomplete="off"
+  autocorrect="off"
+  autocapitalize="sentences"
+  spellcheck="false"
+  inputmode="text"
+  enterkeyhint="send"
+  aria-label="Message input"
+  name="mumbi-message-field"
+  data-form-type="other"
+  aria-autocomplete="none"></textarea>
       <button class="circle-btn" id="mic-btn" onclick="toggleMic()" aria-label="Voice input">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
@@ -761,6 +765,8 @@ body {
       <div class="config-label">API Keys</div>
       <input class="config-input" id="s-groq-key" type="password" placeholder="Groq API Key" 
         autocomplete="off">
+      <input class="config-input" id="s-gemini-key" type="password" placeholder="Gemini API Key (optional fallback)"
+        autocomplete="off">
       <input class="config-input" id="s-elevenlabs-key" type="password" placeholder="ElevenLabs API Key (optional)"
         autocomplete="off">
       <input class="config-input" id="s-elevenlabs-voice" placeholder="Voice ID (default: Adam)"
@@ -769,7 +775,13 @@ body {
     <div class="config-section">
       <div class="config-label">Provider</div>
       <div class="row">
-        <button class="option-btn active" id="p-groq">Groq (Free)</button>
+        <button class="option-btn active" id="p-auto" onclick="setProvider('auto')">Auto</button>
+        <button class="option-btn" id="p-groq" onclick="setProvider('groq')">Groq</button>
+        <button class="option-btn" id="p-gemini" onclick="setProvider('gemini')">Gemini</button>
+      </div>
+      <div style="font-size:11px;color:var(--text2);margin-top:8px;line-height:1.5;">
+        Auto uses Groq first, falls back to Gemini if Groq fails.
+        Gemini free tier uses your data to improve Google products.
       </div>
     </div>
     <div class="config-section">
@@ -1281,7 +1293,23 @@ const THEMES = [
   { id:'slate',    label:'Slate',    swatch:'linear-gradient(135deg,#0f172a,#94a3b8)', bar:'#0f172a', nav:'#0f172a', light:false },
 ];
 
-const PROVIDER_INITIALS = { groq:'GRQ' };
+const PROVIDER_INITIALS = { groq:'GRQ', gemini:'GEM', auto:'AUTO' };
+
+const PROVIDERS = {
+  groq: {
+    name: 'Groq',
+    url: 'https://api.groq.com/openai/v1/chat/completions',
+    model: 'openai/gpt-oss-120b',
+    keyFn: function() { return state.apiKeyGroq; }
+  },
+  gemini: {
+    name: 'Gemini',
+    url: 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions',
+    model: 'gemini-3.5-flash-lite',
+    keyFn: function() { return state.apiKeyGemini; }
+  }
+};
+
 const OFFLINE_TRUTHS = [
   "The signal is gone. The truth was never in the signal. ⚲",
   "Silence is not the absence of wisdom. Wisdom is the silence between words. ⚲",
@@ -1294,21 +1322,20 @@ const OFFLINE_TRUTHS = [
 ];
 
 var state = {
-  userName:'Seeker', apiKeyGroq:'',
-  provider:'groq', autoSpeak:true, echoMode:false,
+  userName:'Seeker', apiKeyGroq:'', apiKeyGemini:'',
+  provider:'auto', autoSpeak:true, echoMode:false,
   autoSend:false, fontSize:100, isMuted:false, theme:'nebula',
   truthsCompleted:0, currentSessionId:null, sessions:{},
   journalEntries:[], journalType:'reflection',
   isLoading:false, isRecording:false, recognition:null, openMenuId:null,
   exchangeCount:0,
+  lastActiveProvider:null,
 };
 
 var mediaRecorder = null;
 var audioChunks = [];
 
 // ── STORAGE HELPERS ──
-// NOTE: Prefix is now 'mumbi_' for consistency with raw memory keys.
-// Old data stored under 'k_' will NOT appear. See migration snippet if needed.
 var s = function(k,v) { try{ localStorage.setItem('mumbi_'+k, typeof v==='object'?JSON.stringify(v):String(v)); }catch(e){} };
 var g = function(k,d) {
   try{
@@ -1324,7 +1351,8 @@ var g = function(k,d) {
 function loadAll(){
   state.userName       = g('userName','Seeker');
   state.apiKeyGroq     = g('groqKey','');
-  state.provider       = 'groq';
+  state.apiKeyGemini   = g('geminiKey','');
+  state.provider       = g('provider','auto');
   state.autoSpeak      = g('autoSpeak',true);
   state.echoMode       = g('echoMode',false);
   state.autoSend       = g('autoSend',false);
@@ -1470,18 +1498,28 @@ function extractJournalThemes(entries, limit) {
 function updateStatusBadge(){
   var dot = document.getElementById('status-dot');
   var init = document.getElementById('provider-initials');
-  var key = state.apiKeyGroq;
   var online = isOnline();
+
+  // Determine which provider is effectively active
+  var effective = state.provider;
+  if (state.provider === 'auto') {
+    effective = state.lastActiveProvider || 'groq';
+  }
+  var key = PROVIDERS[effective] ? PROVIDERS[effective].keyFn() : '';
+
   if (!online) {
     dot.className = '';
     dot.style.background = '#ff9500';
+  } else if (!key || !key.trim()) {
+    dot.className = '';
+    dot.style.background = '#ff3b30';
   } else {
     dot.style.background = '';
-    dot.className = (key&&key.trim()) ? 'ok' : '';
+    dot.className = 'ok';
   }
-  init.textContent = online ? 'GRQ' : 'OFF';
+  init.textContent = online ? (PROVIDER_INITIALS[effective] || effective.toUpperCase()) : 'OFF';
   var el = document.getElementById('empty-instruction');
-  if(el) el.textContent = !online ? 'No signal — the scrolls remain open. ⚲' : (key&&key.trim()) ? 'Ask, and I shall unfold…' : 'Configure Groq API key in Settings to begin.';
+  if(el) el.textContent = !online ? 'No signal — the scrolls remain open. ⚲' : (key&&key.trim()) ? 'Ask, and I shall unfold…' : 'Configure API key in Settings to begin.';
 }
 
 function isOnline() { return navigator.onLine; }
@@ -1567,22 +1605,81 @@ function buildSystemPrompt() {
   return SYSTEM_PROMPT + nameBlock + memBlock;
 }
 
+// ── PROVIDER CALL ──
+async function callProvider(providerId, apiKey, apiMessages) {
+  var p = PROVIDERS[providerId];
+  if (!p) throw new Error('Unknown provider: ' + providerId);
+  if (!apiKey || !apiKey.trim()) throw new Error('Missing ' + p.name + ' API key');
+  
+  // Build base payload — shared across providers
+  var payload = {
+    model: p.model,
+    messages: apiMessages,
+    temperature: 0.95,
+    max_tokens: 2400,
+    top_p: 0.95
+  };
+  
+  // Groq-specific: frequency/presence penalties
+  // Gemini's OpenAI-compat endpoint rejects these with a 400 error
+  if (providerId === 'groq') {
+    payload.frequency_penalty = 0.2;
+    payload.presence_penalty = 0.3;
+  }
+  
+  var res = await fetch(p.url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+    body: JSON.stringify(payload)
+  });
+  
+  if (!res.ok) {
+    var errText = '';
+    try { errText = await res.text(); } catch(e) {}
+    var err = new Error('API error: ' + res.status + (errText ? ' — ' + errText.slice(0, 200) : ''));
+    err.status = res.status;
+    throw err;
+  }
+  var data = await res.json();
+  var content = data.choices?.[0]?.message?.content || '⚲';
+  return content;
+}
+
+// ── MEMORY EXTRACTION ──
 async function extractAndSaveMemory(userText, mũmbiReply) {
   state.exchangeCount = (state.exchangeCount || 0) + 1;
   if (state.exchangeCount % 2 !== 0) return;
-  var apiKey = state.apiKeyGroq;
-  if (!apiKey || !apiKey.trim()) return;
-  var url = 'https://api.groq.com/openai/v1/chat/completions';
-  var model = 'openai/gpt-oss-120b';
+
+  // Pick a provider for extraction — prefer Groq, fall back to Gemini
+  var pid = null;
+  var apiKey = '';
+  if (state.apiKeyGroq && state.apiKeyGroq.trim()) {
+    pid = 'groq'; apiKey = state.apiKeyGroq;
+  } else if (state.apiKeyGemini && state.apiKeyGemini.trim()) {
+    pid = 'gemini'; apiKey = state.apiKeyGemini;
+  } else {
+    return;
+  }
+
   var extractPrompt = 'From this exchange, extract 0-3 short factual memory lines about the seeker. \nOnly facts worth remembering long-term: beliefs, struggles, goals, values, recurring themes, significant life events.\nIf nothing worth saving, reply with exactly: NONE\nReply only with the facts, one per line, no bullets, no explanation.\n\nSeeker said: "' + userText.slice(0, 350) + '"\nMũmbi replied: "' + mũmbiReply.slice(0, 350) + '"';
+
   try {
-    var res = await fetch(url, {
+    // Use the same provider-aware call so Gemini doesn't break on penalties
+    var p = PROVIDERS[pid];
+    var payload = {
+      model: p.model,
+      messages: [{ role: 'user', content: extractPrompt }],
+      temperature: 0.1,
+      max_tokens: 180
+    };
+    if (pid === 'groq') {
+      payload.frequency_penalty = 0.2;
+      payload.presence_penalty = 0.3;
+    }
+    var res = await fetch(p.url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-      body: JSON.stringify({
-        model: model, temperature: 0.1, max_tokens: 180,
-        messages: [{ role: 'user', content: extractPrompt }]
-      })
+      body: JSON.stringify(payload)
     });
     if (!res.ok) return;
     var data = await res.json();
@@ -1861,9 +1958,21 @@ async function sendMessage(override){
     return;
   }
 
-  var apiKey=state.apiKeyGroq;
-  if(!apiKey||!apiKey.trim()){
-    var r={role:'assistant',content:'⚠️ Groq API key missing. Configure in Settings.',timestamp:Date.now()};
+  // Determine provider order
+  var order = [];
+  if (state.provider === 'auto') {
+    order = ['groq', 'gemini'];
+  } else {
+    order = [state.provider];
+  }
+
+  // Check that at least one provider has a key
+  var anyKey = order.some(function(pid) {
+    var k = PROVIDERS[pid].keyFn();
+    return k && k.trim();
+  });
+  if (!anyKey) {
+    var r={role:'assistant',content:'⚠️ No API key configured. Add a Groq or Gemini key in Settings.',timestamp:Date.now()};
     sess.messages.push(r); appendMessage(r); s('sessions',state.sessions); openSettings(); 
     return;
   }
@@ -1877,41 +1986,45 @@ async function sendMessage(override){
   }
 
   setLoading(true);
-  var url='https://api.groq.com/openai/v1/chat/completions';
-  var model='openai/gpt-oss-120b';
   var apiMessages=[{role:'system',content:buildSystemPrompt()}].concat(sess.messages.map(function(m){ return {role:m.role,content:m.content}; }));
 
-  try{
-    var res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
-      body: JSON.stringify({
-        model: model,
-        messages: apiMessages,
-        temperature: 0.95,
-        max_tokens: 2400,
-        top_p: 0.95,
-        frequency_penalty: 0.2,
-        presence_penalty: 0.3
-      }),
-    });
-    if(!res.ok) throw new Error('API error: '+res.status);
-    var data = await res.json();
-    var content = data.choices?.[0]?.message?.content || '⚲';
-    var r = { role: 'assistant', content: content, timestamp: Date.now() };
+  var finalContent = null;
+  var finalError = null;
+  var usedProvider = null;
+
+  for (var i = 0; i < order.length; i++) {
+    var pid = order[i];
+    var key = PROVIDERS[pid].keyFn();
+    if (!key || !key.trim()) continue;
+    try {
+      finalContent = await callProvider(pid, key, apiMessages);
+      usedProvider = pid;
+      break;
+    } catch (err) {
+      finalError = err;
+      var status = err.status || 0;
+      var isSoft = status === 0 || status === 429 || status >= 500;
+      if (!isSoft) break;
+    }
+  }
+
+  if (finalContent !== null) {
+    state.lastActiveProvider = usedProvider;
+    var r = { role: 'assistant', content: finalContent, timestamp: Date.now() };
     sess.messages.push(r);
     appendMessage(r);
     state.truthsCompleted++;
     s('truthsCompleted', state.truthsCompleted);
     s('sessions', state.sessions);
-    if (state.autoSpeak && !state.isMuted && content !== '⚲') speakText(content);
-    extractAndSaveMemory(text, content);
-  } catch(err) {
-    var msg = err.message || 'Network error';
-    if (msg.includes('429')) msg = '⚠️ Groq rate limit reached. Please wait a moment.';
-    if (msg.includes('404')) msg = '⚠️ Model unavailable. Please verify Groq model access.';
-    if (msg.includes('401')) msg = '⚠️ Invalid Groq API key. Check Settings.';
-    if (msg.includes('402')) msg = '⚠️ Groq account issue. Check billing.';
+    if (state.autoSpeak && !state.isMuted && finalContent !== '⚲') speakText(finalContent);
+    extractAndSaveMemory(text, finalContent);
+    updateStatusBadge();
+  } else {
+    var msg = finalError ? (finalError.message || 'Network error') : 'All providers failed.';
+    if (msg.includes('429')) msg = '⚠️ Rate limit reached on all providers. Please wait a moment.';
+    if (msg.includes('404')) msg = '⚠️ Model unavailable. Please verify model access.';
+    if (msg.includes('401')) msg = '⚠️ Invalid API key. Check Settings.';
+    if (msg.includes('402')) msg = '⚠️ Account issue. Check billing.';
     var r = { role: 'assistant', content: msg, timestamp: Date.now() };
     sess.messages.push(r);
     appendMessage(r);
@@ -2085,10 +2198,12 @@ function closeSidebar(){
 function openSettings(){
   document.getElementById('s-username').value=state.userName;
   document.getElementById('s-groq-key').value=state.apiKeyGroq;
+  document.getElementById('s-gemini-key').value=state.apiKeyGemini;
   document.getElementById('s-elevenlabs-key').value=g('elevenLabsKey','');
   document.getElementById('s-elevenlabs-voice').value=g('elevenLabsVoiceId','');
   buildThemeGrid();
   applyFontSize(state.fontSize);
+  setProviderUI(state.provider);
   updateToggles();
   var facts = g('memoryFacts', []);
   var mc = document.getElementById('memory-count');
@@ -2096,8 +2211,16 @@ function openSettings(){
   document.getElementById('settings-panel').classList.add('open');
 }
 function closeSettings(){ document.getElementById('settings-panel').classList.remove('open'); }
-function setProvider(p){ state.provider='groq'; }
-function setProviderUI(p){ /* only Groq exists now */ }
+function setProvider(p){ state.provider=p; setProviderUI(p); updateStatusBadge(); }
+function setProviderUI(p){
+  var ids = ['p-auto','p-groq','p-gemini'];
+  ids.forEach(function(id){
+    var el = document.getElementById(id);
+    if (!el) return;
+    var matches = (id === 'p-' + p);
+    el.classList.toggle('active', matches);
+  });
+}
 function toggleSetting(key){
   state[key]=!state[key]; 
   updateToggles();
@@ -2114,9 +2237,10 @@ function updateToggles(){
 function saveSettings(){
   state.userName=document.getElementById('s-username').value||'Seeker';
   state.apiKeyGroq=document.getElementById('s-groq-key').value;
+  state.apiKeyGemini=document.getElementById('s-gemini-key').value;
   s('elevenLabsKey', document.getElementById('s-elevenlabs-key').value);
   s('elevenLabsVoiceId', document.getElementById('s-elevenlabs-voice').value || 'pNInz6obpgDQGcFmaJgB');
-  s('userName',state.userName); s('groqKey',state.apiKeyGroq);
+  s('userName',state.userName); s('groqKey',state.apiKeyGroq); s('geminiKey',state.apiKeyGemini);
   s('provider',state.provider); s('autoSpeak',state.autoSpeak); s('echoMode',state.echoMode);
   s('autoSend',state.autoSend); s('fontSize',state.fontSize); s('isMuted',state.isMuted); s('theme',state.theme);
   updateStatusBadge(); closeSettings(); showToast('Settings saved ⚲');
